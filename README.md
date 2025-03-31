@@ -2,7 +2,7 @@
 
 This benchmark imports a dataset of Netflix movies into a SQLite database and runs a range of queries to compare performance, memory usage, and allocation efficiency across different go packages.
 
-⚠️ Results aren’t always perfectly comparable — for example, GORM uses preloading to handle many-to-many relationships.
+⚠️ Results aren’t always perfectly comparable — for example, both GORM and Bun use preloading to resolve many-to-many relationships. 
 
 I’m open to feedback and suggestions — I’m not an expert in every tool and aim to make this benchmark as fair and informative as possible.
 
