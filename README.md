@@ -21,7 +21,7 @@ I’m open to feedback and suggestions — I’m not an expert in every tool and
 
 The “Complex” query in the ```gorm``` repository is significantly faster than in other implementations. This suggests that ```gorm```'s preloading strategy performs better for handling multiple many-to-many relationships compared to joining everything in a single query.
 As expected, the implementation using standard SQL is the fastest overall.
-```sqlt``` (my own library) is competitive with standard SQL, aiming for clean abstraction with minimal runtime overhead. ```sqlc``` is fast and efficient in simpler queries but struggles in complex multi-table lookups — likely due to its static nature and lack of relationship mapping.
+```sqlt``` (my own library) is competitive with standard SQL, aiming for clean abstraction with minimal runtime overhead. ```sqlc``` is fast and efficient in simpler queries but struggles in complex multi-table lookups.
 
 ```bash
 go test -bench . -run=xxx -benchmem ./bench-flix_test.go -benchtime=10s
