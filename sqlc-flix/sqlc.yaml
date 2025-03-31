@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    schema: "schema.sql"
+    queries: "queries.sql"
+    database:
+      uri: ":memory:?_fk=1"
+    gen:
+      go:
+        package: "db"
+        out: "internal/db"
