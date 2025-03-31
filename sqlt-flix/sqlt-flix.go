@@ -187,7 +187,7 @@ var (
 		config,
 		sqlt.Parse(`
 			SELECT
-				movies.id,				{{ Scan "ID" }}
+				movies.id,			{{ Scan "ID" }}
 				movies.title,			{{ Scan "Title" }}
 				movies.added_at,		{{ Scan "AddedAt" }}
 				movies.rating,			{{ Scan "Rating" }}
@@ -214,7 +214,7 @@ var (
 					FROM movie_genres
 					JOIN genres ON genres.id = movie_genres.genre_id
 					WHERE movie_genres.movie_id = movies.id
-				) AS genres				{{ ScanSplit "Genres" "," }}
+				) AS genres			{{ ScanSplit "Genres" "," }}
 			FROM movies
 			WHERE movies.id = {{ . }}
 			ORDER BY movies.title ASC;
@@ -225,7 +225,7 @@ var (
 		config,
 		sqlt.Parse(`
 			SELECT
-				movies.id,				{{ Scan "ID" }}
+				movies.id,			{{ Scan "ID" }}
 				movies.title,			{{ Scan "Title" }}
 				movies.added_at,		{{ Scan "AddedAt" }}
 				movies.rating,			{{ Scan "Rating" }}
@@ -252,7 +252,7 @@ var (
 					FROM movie_genres
 					JOIN genres ON genres.id = movie_genres.genre_id
 					WHERE movie_genres.movie_id = movies.id
-				) AS genres				{{ ScanSplit "Genres" "," }}
+				) AS genres			{{ ScanSplit "Genres" "," }}
 			FROM movies
 			WHERE 1=1
 			{{ if .Search }}
