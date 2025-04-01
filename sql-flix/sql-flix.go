@@ -315,8 +315,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		filters = append(filters, `EXISTS (
 			SELECT 1 FROM movie_countries
 			JOIN countries ON countries.id = movie_countries.country_id
-			WHERE movie_countries.movie_id = movies.id
-			AND countries.name = ?
+			WHERE movie_countries.movie_id = movies.id AND countries.name = ?
 		)`)
 
 		args = append(args, query.Country)

@@ -9,7 +9,7 @@ import (
 )
 
 type Movie struct {
-	ID        int64
+	ID        int64 `xorm:"id"`
 	Title     string
 	AddedAt   time.Time
 	Directors []string

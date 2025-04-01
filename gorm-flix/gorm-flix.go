@@ -36,23 +36,23 @@ type Genre struct {
 }
 
 type MovieDirector struct {
-	MovieID  int64 `gorm:"primaryKey"`
-	PersonID int64 `gorm:"primaryKey"`
+	MovieID  int64 `gorm:"primaryKey;not null"`
+	PersonID int64 `gorm:"primaryKey;not null"`
 }
 
 type MovieActor struct {
-	MovieID  int64 `gorm:"primaryKey"`
-	PersonID int64 `gorm:"primaryKey"`
+	MovieID  int64 `gorm:"primaryKey;not null"`
+	PersonID int64 `gorm:"primaryKey;not null"`
 }
 
 type MovieCountry struct {
-	MovieID   int64 `gorm:"primaryKey"`
-	CountryID int64 `gorm:"primaryKey"`
+	MovieID   int64 `gorm:"primaryKey;not null"`
+	CountryID int64 `gorm:"primaryKey;not null"`
 }
 
 type MovieGenre struct {
-	MovieID int64 `gorm:"primaryKey"`
-	GenreID int64 `gorm:"primaryKey"`
+	MovieID int64 `gorm:"primaryKey;not null"`
+	GenreID int64 `gorm:"primaryKey;not null"`
 }
 
 func NewRepository() benchflix.Repository {

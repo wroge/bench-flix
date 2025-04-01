@@ -17,6 +17,7 @@ import (
 	sqlflix "github.com/wroge/bench-flix/sql-flix"
 	sqlcflix "github.com/wroge/bench-flix/sqlc-flix"
 	sqltflix "github.com/wroge/bench-flix/sqlt-flix"
+	xormflix "github.com/wroge/bench-flix/xorm-flix"
 )
 
 var repositories = []func() benchflix.Repository{
@@ -26,6 +27,7 @@ var repositories = []func() benchflix.Repository{
 	entflix.NewRepository,
 	sqlcflix.NewRepository,
 	bunflix.NewRepository,
+	xormflix.NewRepository,
 }
 
 type Case struct {
