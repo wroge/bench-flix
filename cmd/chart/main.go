@@ -22,6 +22,7 @@ func main() {
 	scan := bufio.NewScanner(os.Stdin)
 
 	frameworks := []string{"sql", "gorm", "sqlt", "ent", "sqlc", "bun", "xorm"}
+	variants := []string{}
 
 	data := map[string]map[string]float64{}
 
@@ -54,6 +55,7 @@ func main() {
 		}
 
 		if data[variant] == nil {
+			variants = append(variants, variant)
 			data[variant] = map[string]float64{}
 		}
 
@@ -82,12 +84,12 @@ func main() {
 
 	chart.SetXAxis(frameworks)
 
-	for name, variant := range data {
+	for _, variant := range variants {
 		values := make([]opts.BarData, len(frameworks))
 		for i, fw := range frameworks {
-			values[i] = opts.BarData{Value: variant[fw]}
+			values[i] = opts.BarData{Value: data[variant][fw]}
 		}
-		chart.AddSeries(name, values)
+		chart.AddSeries(variant, values)
 	}
 
 	filename := fmt.Sprintf("%s_%s.png", *benchmark, *unit)
