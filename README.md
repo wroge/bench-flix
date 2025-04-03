@@ -69,3 +69,16 @@ BenchmarkRead/xorm-12              34306             34823 ns/op           10923
 PASS
 ok      github.com/wroge/bench-flix     312.764s
 ```
+
+## Results
+
+```bash
+go test -bench . -run=xxx -benchmem > bench.out
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp
+```
+
+![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_NsPerOp.png)  
+![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_AllocsPerOp.png)  
+![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_AllocedBytesPerOp.png)  
