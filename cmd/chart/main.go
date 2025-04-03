@@ -15,23 +15,20 @@ import (
 
 func main() {
 	unit := flag.String("unit", "NsPerOp", "Benchmark Unit: NsPerOp | AllocedBytesPerOp | AllocsPerOp")
-	output := flag.String("output", "BenchmarkQuery", "Output file prefix (no extension)")
+	benchmark := flag.String("benchmark", "BenchmarkQuery", "Benchmark Name")
+
 	flag.Parse()
 
 	scan := bufio.NewScanner(os.Stdin)
 
-	variants := []string{"Complex", "Mid", "Simple"}
 	frameworks := []string{"sql", "gorm", "sqlt", "ent", "sqlc", "bun", "xorm"}
 
 	data := map[string]map[string]float64{}
-	for _, variant := range variants {
-		data[variant] = map[string]float64{}
-	}
 
 	for scan.Scan() {
 		line := scan.Text()
 
-		if !strings.HasPrefix(line, "BenchmarkQuery/") {
+		if !strings.HasPrefix(line, "Benchmark"+*benchmark+"/") {
 			continue
 		}
 
@@ -40,14 +37,25 @@ func main() {
 			panic(err)
 		}
 
-		name := strings.TrimPrefix(b.Name, "BenchmarkQuery/")
+		name := strings.TrimPrefix(b.Name, "Benchmark"+*benchmark+"/")
 		name = strings.TrimSuffix(name, "-12")
 
 		parts := strings.SplitN(name, "_", 2)
+
+		var (
+			variant, framework string
+		)
+
 		if len(parts) != 2 {
-			continue
+			framework = parts[0]
+		} else {
+			variant = parts[0]
+			framework = parts[1]
 		}
-		variant, framework := parts[0], parts[1]
+
+		if data[variant] == nil {
+			data[variant] = map[string]float64{}
+		}
 
 		switch *unit {
 		case "NsPerOp":
@@ -59,10 +67,12 @@ func main() {
 		}
 	}
 
+	fmt.Println(data)
+
 	chart := charts.NewBar()
 	chart.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: *unit + " BenchmarkQuery",
+			Title: *unit + " " + *benchmark,
 		}),
 		charts.WithAnimation(false),
 		charts.WithInitializationOpts(opts.Initialization{
@@ -72,18 +82,18 @@ func main() {
 
 	chart.SetXAxis(frameworks)
 
-	for _, variant := range variants {
+	for name, variant := range data {
 		values := make([]opts.BarData, len(frameworks))
 		for i, fw := range frameworks {
-			values[i] = opts.BarData{Value: data[variant][fw]}
+			values[i] = opts.BarData{Value: variant[fw]}
 		}
-		chart.AddSeries(variant, values)
+		chart.AddSeries(name, values)
 	}
 
-	filename := fmt.Sprintf("%s_%s.png", *output, *unit)
+	filename := fmt.Sprintf("%s_%s.png", *benchmark, *unit)
 	if err := render.MakeChartSnapshot(chart.RenderContent(), filename); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("✅ Chart written to %s\n", filename)
+	fmt.Printf("Chart written to %s\n", filename)
 }

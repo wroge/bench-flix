@@ -70,15 +70,31 @@ PASS
 ok      github.com/wroge/bench-flix     312.764s
 ```
 
-## Results
+## Charts
 
 ```bash
 go test -bench . -run=xxx -benchmem > bench.out
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query
+
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Create
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Create
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Create
+
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Read
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Read
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Read
 ```
 
-![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_NsPerOp.png)  
-![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_AllocsPerOp.png)  
-![BenchmarkQuery/Simple AllocsPerOp](./BenchmarkQuery_AllocedBytesPerOp.png)  
+![BenchmarkQuery NsPerOp](./Query_NsPerOp.png)  
+![BenchmarkQuery AllocsPerOp](./Query_AllocsPerOp.png)  
+![BenchmarkQuery AllocedBytesPerOp](./Query_AllocedBytesPerOp.png)  
+
+![BenchmarkRead NsPerOp](./Read_NsPerOp.png)  
+![BenchmarkRead AllocsPerOp](./Read_AllocsPerOp.png)  
+![BenchmarkRead AllocedBytesPerOp](./Read_AllocedBytesPerOp.png)  
+
+![BenchmarkCreate NsPerOp](./Create_NsPerOp.png)  
+![BenchmarkCreate AllocsPerOp](./Create_AllocsPerOp.png)  
+![BenchmarkCreate AllocedBytesPerOp](./Create_AllocedBytesPerOp.png)  
