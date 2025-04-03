@@ -2,40 +2,40 @@ goos: darwin
 goarch: arm64
 pkg: github.com/wroge/bench-flix
 cpu: Apple M3 Pro
-BenchmarkCreate/sql-12         	      62	  92895655 ns/op	10273715 B/op	  252049 allocs/op
-BenchmarkCreate/gorm-12        	      31	 189172368 ns/op	90596460 B/op	 1125502 allocs/op
-BenchmarkCreate/sqlt-12        	      45	 128069504 ns/op	21177657 B/op	  550463 allocs/op
-BenchmarkCreate/ent-12         	      32	 175990742 ns/op	40307233 B/op	 1001879 allocs/op
-BenchmarkCreate/sqlc-12        	      38	 152208978 ns/op	14809442 B/op	  462486 allocs/op
-BenchmarkCreate/bun-12         	      39	 149654366 ns/op	82819972 B/op	  429125 allocs/op
-BenchmarkCreate/xorm-12        	       8	 661362896 ns/op	43753482 B/op	 1439532 allocs/op
-BenchmarkQuery/Complex_sql-12  	     267	  21529824 ns/op	   15577 B/op	     271 allocs/op
-BenchmarkQuery/Complex_gorm-12 	     870	   6896398 ns/op	  124163 B/op	    2450 allocs/op
-BenchmarkQuery/Complex_sqlt-12 	     274	  21816432 ns/op	   13627 B/op	     309 allocs/op
-BenchmarkQuery/Complex_ent-12  	     261	  22434487 ns/op	   84017 B/op	    1914 allocs/op
-BenchmarkQuery/Complex_sqlc-12 	     196	  30275810 ns/op	   13149 B/op	     250 allocs/op
-BenchmarkQuery/Complex_bun-12  	     264	  23157414 ns/op	   56167 B/op	    1126 allocs/op
-BenchmarkQuery/Complex_xorm-12 	     258	  23030530 ns/op	   37779 B/op	     786 allocs/op
-BenchmarkQuery/Mid_sql-12      	    1740	   3494931 ns/op	   10900 B/op	     218 allocs/op
-BenchmarkQuery/Mid_gorm-12     	     994	   6037775 ns/op	  104456 B/op	    2029 allocs/op
-BenchmarkQuery/Mid_sqlt-12     	    1717	   3502032 ns/op	   10095 B/op	     252 allocs/op
-BenchmarkQuery/Mid_ent-12      	     322	  18574357 ns/op	   67577 B/op	    1540 allocs/op
-BenchmarkQuery/Mid_sqlc-12     	    1317	   4562168 ns/op	    9190 B/op	     201 allocs/op
-BenchmarkQuery/Mid_bun-12      	    1668	   3601868 ns/op	   49180 B/op	     898 allocs/op
-BenchmarkQuery/Mid_xorm-12     	    1680	   3513153 ns/op	   27918 B/op	     627 allocs/op
-BenchmarkQuery/Simple_sql-12   	    8762	    684801 ns/op	   79322 B/op	    1676 allocs/op
-BenchmarkQuery/Simple_gorm-12  	    4470	   1328577 ns/op	  606310 B/op	   12286 allocs/op
-BenchmarkQuery/Simple_sqlt-12  	    8588	    693973 ns/op	   85181 B/op	    1863 allocs/op
-BenchmarkQuery/Simple_ent-12   	    6360	    931596 ns/op	  314141 B/op	    6698 allocs/op
-BenchmarkQuery/Simple_sqlc-12  	    6676	    887186 ns/op	   89656 B/op	    1513 allocs/op
-BenchmarkQuery/Simple_bun-12   	    6576	    907263 ns/op	  200407 B/op	    5928 allocs/op
-BenchmarkQuery/Simple_xorm-12  	    6184	    839042 ns/op	  206314 B/op	    5035 allocs/op
-BenchmarkRead/sql-12           	  231319	     26075 ns/op	    2384 B/op	      69 allocs/op
-BenchmarkRead/gorm-12          	   65481	     90636 ns/op	   60052 B/op	    1004 allocs/op
-BenchmarkRead/sqlt-12          	  220228	     27192 ns/op	    3521 B/op	      93 allocs/op
-BenchmarkRead/ent-12           	   98563	     60668 ns/op	   33622 B/op	     848 allocs/op
-BenchmarkRead/sqlc-12          	  189384	     32038 ns/op	    2296 B/op	      67 allocs/op
-BenchmarkRead/bun-12           	  121860	     49214 ns/op	   36543 B/op	     414 allocs/op
-BenchmarkRead/xorm-12          	  165248	     36504 ns/op	   10923 B/op	     261 allocs/op
+BenchmarkCreate/sql-12         	      61	  92863774 ns/op	10273832 B/op	  252053 allocs/op
+BenchmarkCreate/gorm-12        	      31	 187119262 ns/op	90582413 B/op	 1125439 allocs/op
+BenchmarkCreate/sqlt-12        	      46	 127322647 ns/op	20787125 B/op	  546694 allocs/op
+BenchmarkCreate/ent-12         	      33	 176582576 ns/op	40302083 B/op	 1001841 allocs/op
+BenchmarkCreate/sqlc-12        	      38	 153358751 ns/op	14814029 B/op	  462517 allocs/op
+BenchmarkCreate/bun-12         	      38	 150988586 ns/op	82825345 B/op	  429180 allocs/op
+BenchmarkCreate/xorm-12        	       8	 655162422 ns/op	43760558 B/op	 1439608 allocs/op
+BenchmarkQuery/Complex_sql-12  	     283	  20840607 ns/op	   15576 B/op	     271 allocs/op
+BenchmarkQuery/Complex_gorm-12 	     874	   6903647 ns/op	  124165 B/op	    2450 allocs/op
+BenchmarkQuery/Complex_sqlt-12 	     284	  20960174 ns/op	   13624 B/op	     309 allocs/op
+BenchmarkQuery/Complex_ent-12  	     286	  20979132 ns/op	   84019 B/op	    1914 allocs/op
+BenchmarkQuery/Complex_sqlc-12 	     196	  30419552 ns/op	   13133 B/op	     250 allocs/op
+BenchmarkQuery/Complex_bun-12  	     274	  21918239 ns/op	   56167 B/op	    1126 allocs/op
+BenchmarkQuery/Complex_xorm-12 	     283	  21224904 ns/op	   37773 B/op	     786 allocs/op
+BenchmarkQuery/Mid_sql-12      	    1816	   3331734 ns/op	   10899 B/op	     218 allocs/op
+BenchmarkQuery/Mid_gorm-12     	    1070	   5728391 ns/op	  104463 B/op	    2029 allocs/op
+BenchmarkQuery/Mid_sqlt-12     	    1820	   3314053 ns/op	   10095 B/op	     252 allocs/op
+BenchmarkQuery/Mid_ent-12      	     354	  16992457 ns/op	   67547 B/op	    1540 allocs/op
+BenchmarkQuery/Mid_sqlc-12     	    1363	   4417273 ns/op	    9190 B/op	     201 allocs/op
+BenchmarkQuery/Mid_bun-12      	    1720	   3441551 ns/op	   49172 B/op	     898 allocs/op
+BenchmarkQuery/Mid_xorm-12     	    1801	   3304328 ns/op	   27916 B/op	     627 allocs/op
+BenchmarkQuery/Simple_sql-12   	    9102	    662000 ns/op	   79217 B/op	    1676 allocs/op
+BenchmarkQuery/Simple_gorm-12  	    4702	   1274361 ns/op	  606324 B/op	   12286 allocs/op
+BenchmarkQuery/Simple_sqlt-12  	    8926	    684950 ns/op	   85142 B/op	    1863 allocs/op
+BenchmarkQuery/Simple_ent-12   	    6420	    932727 ns/op	  314241 B/op	    6698 allocs/op
+BenchmarkQuery/Simple_sqlc-12  	    6813	    868633 ns/op	   89708 B/op	    1513 allocs/op
+BenchmarkQuery/Simple_bun-12   	    6720	    893246 ns/op	  200426 B/op	    5928 allocs/op
+BenchmarkQuery/Simple_xorm-12  	    7468	    806683 ns/op	  206321 B/op	    5035 allocs/op
+BenchmarkRead/sql-12           	  239113	     25059 ns/op	    2384 B/op	      69 allocs/op
+BenchmarkRead/gorm-12          	   69504	     86090 ns/op	   60053 B/op	    1004 allocs/op
+BenchmarkRead/sqlt-12          	  227034	     26153 ns/op	    3521 B/op	      93 allocs/op
+BenchmarkRead/ent-12           	  103480	     57747 ns/op	   33622 B/op	     848 allocs/op
+BenchmarkRead/sqlc-12          	  191491	     31220 ns/op	    2296 B/op	      67 allocs/op
+BenchmarkRead/bun-12           	  126250	     46475 ns/op	   36543 B/op	     414 allocs/op
+BenchmarkRead/xorm-12          	  173288	     34625 ns/op	   10923 B/op	     261 allocs/op
 PASS
-ok  	github.com/wroge/bench-flix	483.081s
+ok  	github.com/wroge/bench-flix	480.511s
