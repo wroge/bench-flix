@@ -67,16 +67,17 @@ func NewRepository() benchflix.Repository {
 		panic(err)
 	}
 
-	return Repository{
+	r := Repository{
 		DB: db,
 	}
+
+	return r
 }
 
 type Repository struct {
 	DB *sql.DB
 }
 
-// Create implements benchflix.Repository.
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
 	tx, err := r.DB.BeginTx(ctx, nil)
 	if err != nil {
@@ -99,19 +100,19 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		return err
 	}
 
-	if len(movie.Directors)+len(movie.Actors) > 0 {
-		personArgs := make([]any, len(movie.Directors)+len(movie.Actors))
+	if len(movie.Directors) > 0 {
+		directorNames := make([]any, len(movie.Directors))
 
-		for i, p := range append(movie.Directors, movie.Actors...) {
-			personArgs[i] = p
+		for i, p := range movie.Directors {
+			directorNames[i] = p
 		}
 
 		rows, err := tx.QueryContext(ctx,
 			fmt.Sprintf(
 				`INSERT INTO people (name) VALUES %s ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
-				strings.Repeat(",(?)", len(personArgs))[1:],
+				strings.Repeat(",(?)", len(directorNames))[1:],
 			),
-			personArgs...)
+			directorNames...)
 		if err != nil {
 			return err
 		}
@@ -120,55 +121,84 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 			err = errors.Join(err, rows.Err(), rows.Close())
 		}()
 
-		personIDs := make([]int64, len(personArgs))
+		directorIDs := make([]int64, len(directorNames))
 		index := 0
 
 		for rows.Next() {
-			if err = rows.Scan(&personIDs[index]); err != nil {
+			if err = rows.Scan(&directorIDs[index]); err != nil {
 				return err
 			}
 
 			index++
 		}
 
-		if len(movie.Directors) > 0 {
-			movieDirectorArgs := make([]any, len(movie.Directors)*2)
+		movieDirectorArgs := make([]any, len(directorIDs)*2)
 
-			for i := range len(movie.Directors) {
-				movieDirectorArgs[i*2] = movie.ID
-				movieDirectorArgs[i*2+1] = personIDs[i]
-			}
-
-			_, err = tx.ExecContext(ctx,
-				fmt.Sprintf(
-					`INSERT INTO movie_directors (movie_id, person_id) VALUES %s;`,
-					strings.Repeat(",(?, ?)", len(movie.Directors))[1:],
-				),
-				movieDirectorArgs...,
-			)
-			if err != nil {
-				return err
-			}
+		for i, id := range directorIDs {
+			movieDirectorArgs[i*2] = movie.ID
+			movieDirectorArgs[i*2+1] = id
 		}
 
-		if len(movie.Actors) > 0 {
-			movieActorArgs := make([]any, len(movie.Actors)*2)
+		_, err = tx.ExecContext(ctx,
+			fmt.Sprintf(
+				`INSERT INTO movie_directors (movie_id, person_id) VALUES %s;`,
+				strings.Repeat(",(?, ?)", len(directorIDs))[1:],
+			),
+			movieDirectorArgs...,
+		)
+		if err != nil {
+			return err
+		}
+	}
 
-			for i := range len(movie.Actors) {
-				movieActorArgs[i*2] = movie.ID
-				movieActorArgs[i*2+1] = personIDs[len(movie.Directors)+i]
-			}
+	if len(movie.Actors) > 0 {
+		actorNames := make([]any, len(movie.Actors))
 
-			_, err = tx.ExecContext(ctx,
-				fmt.Sprintf(
-					`INSERT INTO movie_actors (movie_id, person_id) VALUES %s;`,
-					strings.Repeat(",(?, ?)", len(movie.Actors))[1:],
-				),
-				movieActorArgs...,
-			)
-			if err != nil {
+		for i, p := range movie.Actors {
+			actorNames[i] = p
+		}
+
+		rows, err := tx.QueryContext(ctx,
+			fmt.Sprintf(
+				`INSERT INTO people (name) VALUES %s ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
+				strings.Repeat(",(?)", len(actorNames))[1:],
+			),
+			actorNames...)
+		if err != nil {
+			return err
+		}
+
+		defer func() {
+			err = errors.Join(err, rows.Err(), rows.Close())
+		}()
+
+		actorIDs := make([]int64, len(actorNames))
+		index := 0
+
+		for rows.Next() {
+			if err = rows.Scan(&actorIDs[index]); err != nil {
 				return err
 			}
+
+			index++
+		}
+
+		movieActorArgs := make([]any, len(actorIDs)*2)
+
+		for i, id := range actorIDs {
+			movieActorArgs[i*2] = movie.ID
+			movieActorArgs[i*2+1] = id
+		}
+
+		_, err = tx.ExecContext(ctx,
+			fmt.Sprintf(
+				`INSERT INTO movie_actors (movie_id, person_id) VALUES %s;`,
+				strings.Repeat(",(?, ?)", len(actorIDs))[1:],
+			),
+			movieActorArgs...,
+		)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -279,13 +309,12 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 	return nil
 }
 
-// Query implements benchflix.Repository.
 func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchflix.Movie, error) {
-	filters := []string{"1=1"}
+	builder := &strings.Builder{}
 	args := []any{}
 
 	if query.Search != "" {
-		filters = append(filters, `(
+		builder.WriteString(`AND (
 			EXISTS (
 				SELECT 1 FROM movie_directors
 				JOIN people ON people.id = movie_directors.person_id
@@ -302,7 +331,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	}
 
 	if query.Genre != "" {
-		filters = append(filters, `EXISTS (
+		builder.WriteString(`AND EXISTS (
 			SELECT 1 FROM movie_genres
 			JOIN genres ON genres.id = movie_genres.genre_id
 			WHERE movie_genres.movie_id = movies.id AND genres.name = ?
@@ -312,7 +341,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	}
 
 	if query.Country != "" {
-		filters = append(filters, `EXISTS (
+		builder.WriteString(`AND EXISTS (
 			SELECT 1 FROM movie_countries
 			JOIN countries ON countries.id = movie_countries.country_id
 			WHERE movie_countries.movie_id = movies.id AND countries.name = ?
@@ -322,22 +351,22 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	}
 
 	if !query.AddedBefore.IsZero() {
-		filters = append(filters, `added_at < ?`)
+		builder.WriteString(`AND added_at < ?`)
 		args = append(args, query.AddedBefore)
 	}
 
 	if !query.AddedAfter.IsZero() {
-		filters = append(filters, `added_at > ?`)
+		builder.WriteString(`AND added_at > ?`)
 		args = append(args, query.AddedAfter)
 	}
 
 	if query.MinRating > 0 {
-		filters = append(filters, `rating >= ?`)
+		builder.WriteString(`AND rating >= ?`)
 		args = append(args, query.MinRating)
 	}
 
 	if query.MaxRating > 0 {
-		filters = append(filters, `rating <= ?`)
+		builder.WriteString(`AND rating <= ?`)
 		args = append(args, query.MaxRating)
 	}
 
@@ -373,9 +402,9 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 					WHERE movie_genres.movie_id = movies.id
 				) AS genres
 			FROM movies
-			WHERE %s
+			WHERE 1=1 %s
 			ORDER BY movies.title ASC;`,
-			strings.Join(filters, " AND "),
+			builder,
 		),
 		args...,
 	)
@@ -399,29 +428,12 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 			return nil, err
 		}
 
-		if directors.Valid {
-			movie.Directors = strings.Split(directors.String, ",")
-		}
-
-		if actors.Valid {
-			movie.Actors = strings.Split(actors.String, ",")
-		}
-
-		if countries.Valid {
-			movie.Countries = strings.Split(countries.String, ",")
-		}
-
-		if genres.Valid {
-			movie.Genres = strings.Split(genres.String, ",")
-		}
-
-		movies = append(movies, movie)
+		movies = append(movies, ConvertMovie(movie, directors, actors, countries, genres))
 	}
 
 	return movies, nil
 }
 
-// Read implements benchflix.Repository.
 func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error) {
 	row := r.DB.QueryRowContext(ctx,
 		`SELECT
@@ -461,17 +473,32 @@ func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error)
 
 	var (
 		movie                                benchflix.Movie
-		directors, actors, countries, genres string
+		directors, actors, countries, genres sql.NullString
 	)
 
 	if err := row.Scan(&movie.ID, &movie.Title, &movie.AddedAt, &movie.Rating, &directors, &actors, &countries, &genres); err != nil {
 		return benchflix.Movie{}, err
 	}
 
-	movie.Directors = strings.Split(directors, ",")
-	movie.Actors = strings.Split(actors, ",")
-	movie.Countries = strings.Split(countries, ",")
-	movie.Genres = strings.Split(genres, ",")
+	return ConvertMovie(movie, directors, actors, countries, genres), nil
+}
 
-	return movie, nil
+func ConvertMovie(movie benchflix.Movie, directors, actors, countries, genres sql.NullString) benchflix.Movie {
+	if directors.Valid {
+		movie.Directors = strings.Split(directors.String, ",")
+	}
+
+	if actors.Valid {
+		movie.Actors = strings.Split(actors.String, ",")
+	}
+
+	if countries.Valid {
+		movie.Countries = strings.Split(countries.String, ",")
+	}
+
+	if genres.Valid {
+		movie.Genres = strings.Split(genres.String, ",")
+	}
+
+	return movie
 }

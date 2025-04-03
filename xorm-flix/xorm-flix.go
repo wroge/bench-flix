@@ -230,25 +230,25 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		movies.added_at,
 		movies.rating,
 		(
-			SELECT json_group_array(people.name ORDER BY people.name)
+			SELECT JSON_GROUP_ARRAY(people.name ORDER BY people.name)
 			FROM movie_directors
 			JOIN people ON people.id = movie_directors.person_id
 			WHERE movie_directors.movie_id = movies.id
 		) AS directors,
 		(
-			SELECT json_group_array(people.name ORDER BY people.name)
+			SELECT JSON_GROUP_ARRAY(people.name ORDER BY people.name)
 			FROM movie_actors
 			JOIN people ON people.id = movie_actors.person_id
 			WHERE movie_actors.movie_id = movies.id
 		) AS actors,
 		(
-			SELECT json_group_array(countries.name ORDER BY countries.name)
+			SELECT JSON_GROUP_ARRAY(countries.name ORDER BY countries.name)
 			FROM movie_countries
 			JOIN countries ON countries.id = movie_countries.country_id
 			WHERE movie_countries.movie_id = movies.id
 		) AS countries,
 		(
-			SELECT json_group_array(genres.name ORDER BY genres.name)
+			SELECT JSON_GROUP_ARRAY(genres.name ORDER BY genres.name)
 			FROM movie_genres
 			JOIN genres ON genres.id = movie_genres.genre_id
 			WHERE movie_genres.movie_id = movies.id

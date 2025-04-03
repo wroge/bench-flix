@@ -152,25 +152,29 @@ func (r Repository) Query(ctx context.Context, q benchflix.Query) ([]benchflix.M
 
 	var movies []benchflix.Movie
 	for _, row := range rows {
-		movie := benchflix.Movie{
-			ID:        row.ID,
-			Title:     row.Title,
-			AddedAt:   row.AddedAt,
-			Rating:    row.Rating,
-			Directors: splitCSV(row.Directors),
-			Actors:    splitCSV(row.Actors),
-			Countries: splitCSV(row.Countries),
-			Genres:    splitCSV(row.Genres),
-		}
-		movies = append(movies, movie)
+		movies = append(movies, ConvertMovie(row))
 	}
 
 	return movies, nil
+}
+
+func ConvertMovie(m db.QueryMoviesRow) benchflix.Movie {
+	return benchflix.Movie{
+		ID:        m.ID,
+		Title:     m.Title,
+		AddedAt:   m.AddedAt,
+		Rating:    m.Rating,
+		Directors: splitCSV(m.Directors),
+		Actors:    splitCSV(m.Actors),
+		Countries: splitCSV(m.Countries),
+		Genres:    splitCSV(m.Genres),
+	}
 }
 
 func splitCSV(s string) []string {
 	if s == "" {
 		return nil
 	}
+
 	return strings.Split(s, ",")
 }

@@ -35,7 +35,7 @@ type Repository struct {
 
 // Create implements benchflix.Repository.
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
-	tx, err := r.Client.BeginTx(ctx, nil)
+	tx, err := r.Client.Tx(ctx)
 	if err != nil {
 		return err
 	}
@@ -170,7 +170,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	movies := make([]benchflix.Movie, len(result))
 
 	for i, each := range result {
-		movies[i] = toMovie(each)
+		movies[i] = ConvertMovie(each)
 	}
 
 	return movies, nil
@@ -202,34 +202,34 @@ func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error)
 		return benchflix.Movie{}, err
 	}
 
-	return toMovie(result), nil
+	return ConvertMovie(result), nil
 }
 
-func toMovie(result *ent.Movie) benchflix.Movie {
+func ConvertMovie(m *ent.Movie) benchflix.Movie {
 	movie := benchflix.Movie{
-		ID:        result.ID,
-		Title:     result.Title,
-		AddedAt:   result.AddedAt,
-		Rating:    result.Rating,
-		Directors: make([]string, len(result.Edges.Directors)),
-		Actors:    make([]string, len(result.Edges.Actors)),
-		Countries: make([]string, len(result.Edges.Countries)),
-		Genres:    make([]string, len(result.Edges.Genres)),
+		ID:        m.ID,
+		Title:     m.Title,
+		AddedAt:   m.AddedAt,
+		Rating:    m.Rating,
+		Directors: make([]string, len(m.Edges.Directors)),
+		Actors:    make([]string, len(m.Edges.Actors)),
+		Countries: make([]string, len(m.Edges.Countries)),
+		Genres:    make([]string, len(m.Edges.Genres)),
 	}
 
-	for j, v := range result.Edges.Directors {
+	for j, v := range m.Edges.Directors {
 		movie.Directors[j] = v.Name
 	}
 
-	for j, v := range result.Edges.Actors {
+	for j, v := range m.Edges.Actors {
 		movie.Actors[j] = v.Name
 	}
 
-	for j, v := range result.Edges.Countries {
+	for j, v := range m.Edges.Countries {
 		movie.Countries[j] = v.Name
 	}
 
-	for j, v := range result.Edges.Genres {
+	for j, v := range m.Edges.Genres {
 		movie.Genres[j] = v.Name
 	}
 

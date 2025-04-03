@@ -7,6 +7,7 @@ import (
 	benchflix "github.com/wroge/bench-flix"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Movie struct {
@@ -78,7 +79,6 @@ type Repository struct {
 	DB *gorm.DB
 }
 
-// Create implements benchflix.Repository.
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {
 	return r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		create := Movie{
@@ -88,55 +88,94 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {
 			Rating:  movie.Rating,
 		}
 
-		if err := tx.Create(&create).Error; err != nil {
-			return err
-		}
+		if len(movie.Directors) > 0 {
+			create.Directors = make([]*Person, len(movie.Directors))
 
-		for _, name := range movie.Directors {
-			var person Person
-			if err := tx.FirstOrCreate(&person, Person{Name: name}).Error; err != nil {
-				return err
+			for i, name := range movie.Directors {
+				create.Directors[i] = &Person{
+					Name: name,
+				}
 			}
-			if err := tx.Model(&create).Association("Directors").Append(&person); err != nil {
-				return err
-			}
-		}
 
-		for _, name := range movie.Actors {
-			var person Person
-			if err := tx.FirstOrCreate(&person, Person{Name: name}).Error; err != nil {
-				return err
-			}
-			if err := tx.Model(&create).Association("Actors").Append(&person); err != nil {
+			if err := tx.Clauses(clause.OnConflict{
+				DoUpdates: clause.Set{
+					clause.Assignment{
+						Column: clause.Column{Name: "name"},
+						Value:  gorm.Expr("EXCLUDED.name"),
+					},
+				},
+			}).Create(create.Directors).Error; err != nil {
 				return err
 			}
 		}
 
-		for _, name := range movie.Countries {
-			var country Country
-			if err := tx.FirstOrCreate(&country, Country{Name: name}).Error; err != nil {
-				return err
+		if len(movie.Actors) > 0 {
+			create.Actors = make([]*Person, len(movie.Actors))
+
+			for i, name := range movie.Actors {
+				create.Actors[i] = &Person{
+					Name: name,
+				}
 			}
-			if err := tx.Model(&create).Association("Countries").Append(&country); err != nil {
+
+			if err := tx.Clauses(clause.OnConflict{
+				DoUpdates: clause.Set{
+					clause.Assignment{
+						Column: clause.Column{Name: "name"},
+						Value:  gorm.Expr("EXCLUDED.name"),
+					},
+				},
+			}).Create(create.Actors).Error; err != nil {
 				return err
 			}
 		}
 
-		for _, name := range movie.Genres {
-			var genre Genre
-			if err := tx.FirstOrCreate(&genre, Genre{Name: name}).Error; err != nil {
-				return err
+		if len(movie.Countries) > 0 {
+			create.Countries = make([]*Country, len(movie.Countries))
+
+			for i, name := range movie.Countries {
+				create.Countries[i] = &Country{
+					Name: name,
+				}
 			}
-			if err := tx.Model(&create).Association("Genres").Append(&genre); err != nil {
+
+			if err := tx.Clauses(clause.OnConflict{
+				DoUpdates: clause.Set{
+					clause.Assignment{
+						Column: clause.Column{Name: "name"},
+						Value:  gorm.Expr("EXCLUDED.name"),
+					},
+				},
+			}).Create(create.Countries).Error; err != nil {
 				return err
 			}
 		}
 
-		return nil
+		if len(movie.Genres) > 0 {
+			create.Genres = make([]*Genre, len(movie.Genres))
+
+			for i, name := range movie.Genres {
+				create.Genres[i] = &Genre{
+					Name: name,
+				}
+			}
+
+			if err := tx.Clauses(clause.OnConflict{
+				DoUpdates: clause.Set{
+					clause.Assignment{
+						Column: clause.Column{Name: "name"},
+						Value:  gorm.Expr("EXCLUDED.name"),
+					},
+				},
+			}).Create(create.Genres).Error; err != nil {
+				return err
+			}
+		}
+
+		return tx.Create(&create).Error
 	})
 }
 
-// Query implements benchflix.Repository.
 func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchflix.Movie, error) {
 	var list []Movie
 
@@ -200,40 +239,12 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	movies := make([]benchflix.Movie, len(list))
 
 	for i, one := range list {
-		movie := benchflix.Movie{
-			ID:        one.ID,
-			Title:     one.Title,
-			AddedAt:   one.AddedAt,
-			Rating:    one.Rating,
-			Directors: make([]string, len(one.Directors)),
-			Actors:    make([]string, len(one.Actors)),
-			Countries: make([]string, len(one.Countries)),
-			Genres:    make([]string, len(one.Genres)),
-		}
-
-		for i, d := range one.Directors {
-			movie.Directors[i] = d.Name
-		}
-
-		for i, d := range one.Actors {
-			movie.Actors[i] = d.Name
-		}
-
-		for i, d := range one.Countries {
-			movie.Countries[i] = d.Name
-		}
-
-		for i, d := range one.Genres {
-			movie.Genres[i] = d.Name
-		}
-
-		movies[i] = movie
+		movies[i] = ConvertMovie(one)
 	}
 
 	return movies, nil
 }
 
-// Read implements benchflix.Repository.
 func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error) {
 	var one Movie
 
@@ -256,32 +267,36 @@ func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error)
 		return benchflix.Movie{}, err
 	}
 
+	return ConvertMovie(one), nil
+}
+
+func ConvertMovie(m Movie) benchflix.Movie {
 	movie := benchflix.Movie{
-		ID:        one.ID,
-		Title:     one.Title,
-		AddedAt:   one.AddedAt,
-		Rating:    one.Rating,
-		Directors: make([]string, len(one.Directors)),
-		Actors:    make([]string, len(one.Actors)),
-		Countries: make([]string, len(one.Countries)),
-		Genres:    make([]string, len(one.Genres)),
+		ID:        m.ID,
+		Title:     m.Title,
+		AddedAt:   m.AddedAt,
+		Rating:    m.Rating,
+		Directors: make([]string, len(m.Directors)),
+		Actors:    make([]string, len(m.Actors)),
+		Countries: make([]string, len(m.Countries)),
+		Genres:    make([]string, len(m.Genres)),
 	}
 
-	for i, d := range one.Directors {
+	for i, d := range m.Directors {
 		movie.Directors[i] = d.Name
 	}
 
-	for i, d := range one.Actors {
+	for i, d := range m.Actors {
 		movie.Actors[i] = d.Name
 	}
 
-	for i, d := range one.Countries {
+	for i, d := range m.Countries {
 		movie.Countries[i] = d.Name
 	}
 
-	for i, d := range one.Genres {
+	for i, d := range m.Genres {
 		movie.Genres[i] = d.Name
 	}
 
-	return movie, nil
+	return movie
 }
