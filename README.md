@@ -73,10 +73,14 @@ ok      github.com/wroge/bench-flix     312.764s
 ## Charts
 
 ```bash
-go test -bench . -run=xxx -benchmem > bench.out
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query
+go test -bench . -run=xxx -benchmem -benchtime=5s > bench.out
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Complex
+
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple,Mid,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Simple,Mid,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Simple,Mid,Complex
 
 cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Create
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Create
@@ -87,14 +91,24 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Read
 ```
 
-![BenchmarkQuery NsPerOp](./Query_NsPerOp.png)  
-![BenchmarkQuery AllocsPerOp](./Query_AllocsPerOp.png)  
-![BenchmarkQuery AllocedBytesPerOp](./Query_AllocedBytesPerOp.png)  
+### Query
 
-![BenchmarkRead NsPerOp](./Read_NsPerOp.png)  
-![BenchmarkRead AllocsPerOp](./Read_AllocsPerOp.png)  
-![BenchmarkRead AllocedBytesPerOp](./Read_AllocedBytesPerOp.png)  
+![BenchmarkQuery NsPerOp](./Query_NsPerOp_SimpleMidComplex.png)
+![BenchmarkQuery AllocsPerOp](./Query_AllocsPerOp_SimpleMidComplex.png)
+![BenchmarkQuery AllocedBytesPerOp](./Query_AllocedBytesPerOp_SimpleMidComplex.png)
 
-![BenchmarkCreate NsPerOp](./Create_NsPerOp.png)  
-![BenchmarkCreate AllocsPerOp](./Create_AllocsPerOp.png)  
-![BenchmarkCreate AllocedBytesPerOp](./Create_AllocedBytesPerOp.png)  
+![BenchmarkQuery NsPerOp](./Query_NsPerOp_Simple.png)
+![BenchmarkQuery AllocsPerOp](./Query_AllocsPerOp_Complex.png)
+![BenchmarkQuery AllocedBytesPerOp](./Query_AllocedBytesPerOp_Complex.png)
+
+### Read
+
+![BenchmarkRead NsPerOp](./Read_NsPerOp.png)
+![BenchmarkRead AllocsPerOp](./Read_AllocsPerOp.png)
+![BenchmarkRead AllocedBytesPerOp](./Read_AllocedBytesPerOp.png)
+
+### Create
+
+![BenchmarkCreate NsPerOp](./Create_NsPerOp.png)
+![BenchmarkCreate AllocsPerOp](./Create_AllocsPerOp.png)
+![BenchmarkCreate AllocedBytesPerOp](./Create_AllocedBytesPerOp.png)

@@ -16,13 +16,14 @@ import (
 func main() {
 	unit := flag.String("unit", "NsPerOp", "Benchmark Unit: NsPerOp | AllocedBytesPerOp | AllocsPerOp")
 	benchmark := flag.String("benchmark", "BenchmarkQuery", "Benchmark Name")
+	variants := flag.String("variants", "", "Benchmark Variants")
+	frameworks := flag.String("frameworks", "sql,gorm,sqlt,ent,sqlc,bun,xorm", "Frameworks")
 
 	flag.Parse()
 
 	scan := bufio.NewScanner(os.Stdin)
 
-	frameworks := []string{"sql", "gorm", "sqlt", "ent", "sqlc", "bun", "xorm"}
-	variants := []string{}
+	frameworksSlice := strings.Split(*frameworks, ",")
 
 	data := map[string]map[string]float64{}
 
@@ -55,7 +56,6 @@ func main() {
 		}
 
 		if data[variant] == nil {
-			variants = append(variants, variant)
 			data[variant] = map[string]float64{}
 		}
 
@@ -82,18 +82,29 @@ func main() {
 		}),
 	)
 
-	chart.SetXAxis(frameworks)
+	chart.SetXAxis(frameworksSlice)
 
-	for _, variant := range variants {
-		values := make([]opts.BarData, len(frameworks))
-		for i, fw := range frameworks {
+	variantSlice := strings.Split(*variants, ",")
+	if len(variantSlice) == 0 {
+		variantSlice = []string{""}
+	}
+
+	for _, variant := range variantSlice {
+		values := make([]opts.BarData, len(frameworksSlice))
+		for i, fw := range frameworksSlice {
 			values[i] = opts.BarData{Value: data[variant][fw]}
 		}
+
 		chart.AddSeries(variant, values)
 	}
 
-	filename := fmt.Sprintf("%s_%s.png", *benchmark, *unit)
-	if err := render.MakeChartSnapshot(chart.RenderContent(), filename); err != nil {
+	filename := fmt.Sprintf("%s_%s", *benchmark, *unit)
+
+	if *variants != "" {
+		filename += "_" + strings.ReplaceAll(*variants, ",", "")
+	}
+
+	if err := render.MakeChartSnapshot(chart.RenderContent(), filename+".png"); err != nil {
 		panic(err)
 	}
 
