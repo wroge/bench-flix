@@ -11,8 +11,8 @@ import (
 	benchflix "github.com/wroge/bench-flix"
 )
 
-func NewRepository() benchflix.Repository {
-	db, err := sql.Open("sqlite3", ":memory:?_fk=1")
+func NewRepository(driverName, dataSourceName string) benchflix.Repository {
+	db, err := sql.Open(driverName, dataSourceName)
 	if err != nil {
 		panic(err)
 	}

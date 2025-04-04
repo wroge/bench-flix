@@ -14,8 +14,8 @@ import (
 	"github.com/wroge/bench-flix/ent-flix/ent/person"
 )
 
-func NewRepository() benchflix.Repository {
-	client, err := ent.Open("sqlite3", ":memory:?_fk=1")
+func NewRepository(driverName, dataSourceName string) benchflix.Repository {
+	client, err := ent.Open(driverName, dataSourceName)
 	if err != nil {
 		panic(err)
 	}

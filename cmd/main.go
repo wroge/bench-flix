@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	r := bunflix.NewRepository()
+	r := bunflix.NewRepository("sqlite3", "test.db?_fk=1")
 
 	file, err := os.Open("./movies.csv")
 	if err != nil {

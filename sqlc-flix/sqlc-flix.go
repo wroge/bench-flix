@@ -15,8 +15,8 @@ import (
 //go:embed schema.sql
 var ddl string
 
-func NewRepository() benchflix.Repository {
-	sqldb, err := sql.Open("sqlite3", ":memory:?_fk=1")
+func NewRepository(driverName, dataSourceName string) benchflix.Repository {
+	sqldb, err := sql.Open(driverName, dataSourceName)
 	if err != nil {
 		panic(err)
 	}

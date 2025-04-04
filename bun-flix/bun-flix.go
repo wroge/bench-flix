@@ -87,8 +87,8 @@ type MovieGenre struct {
 	Genre *Genre `bun:"rel:belongs-to,join:genre_id=id"`
 }
 
-func NewRepository() benchflix.Repository {
-	sqldb, err := sql.Open("sqlite3", ":memory:?_fk=1")
+func NewRepository(driverName, dataSourceName string) benchflix.Repository {
+	sqldb, err := sql.Open(driverName, dataSourceName)
 	if err != nil {
 		panic(err)
 	}

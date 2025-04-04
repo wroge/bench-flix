@@ -56,8 +56,8 @@ type MovieGenre struct {
 	GenreID int64 `gorm:"primaryKey;not null"`
 }
 
-func NewRepository() benchflix.Repository {
-	db, err := gorm.Open(sqlite.Open(":memory:?_fk=1"), &gorm.Config{
+func NewRepository(dsn string) benchflix.Repository {
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})
 	if err != nil {

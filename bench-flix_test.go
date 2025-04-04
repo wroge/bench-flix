@@ -18,35 +18,47 @@ import (
 	sqltflix "github.com/wroge/bench-flix/sqlt-flix"
 )
 
-type Repository struct {
+type Init struct {
 	Name string
 	New  func() benchflix.Repository
 }
 
-var repositories = []Repository{
+var inits = []Init{
 	{
 		"sql",
-		sqlflix.NewRepository,
+		func() benchflix.Repository {
+			return sqlflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
 	},
 	{
 		"gorm",
-		gormflix.NewRepository,
+		func() benchflix.Repository {
+			return gormflix.NewRepository(":memory:?_fk=1")
+		},
 	},
 	{
 		"sqlt",
-		sqltflix.NewRepository,
+		func() benchflix.Repository {
+			return sqltflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
 	},
 	{
 		"ent",
-		entflix.NewRepository,
+		func() benchflix.Repository {
+			return entflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
 	},
 	{
 		"sqlc",
-		sqlcflix.NewRepository,
+		func() benchflix.Repository {
+			return sqlcflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
 	},
 	{
 		"bun",
-		bunflix.NewRepository,
+		func() benchflix.Repository {
+			return bunflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
 	},
 }
 
@@ -111,10 +123,8 @@ func BenchmarkSchemaAndCreate(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	for _, init := range repositories {
+	for _, init := range inits {
 		b.Run(init.Name, func(b *testing.B) {
-			// TODO: Warm-up phase for all benchmarks?
-
 			for b.Loop() {
 				r := init.New()
 
@@ -146,33 +156,38 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	for _, init := range repositories {
-		b.Run(init.Name, func(b *testing.B) {
-			// TODO: Warm-up phase for all benchmarks?
+	do := func(r benchflix.Repository) {
+		ids := []int64{}
 
+		for _, record := range records[1:1000] {
+			movie, err := benchflix.NewMovie(record)
+			if err != nil {
+				b.Fatal(reflect.TypeOf(r), err)
+			}
+
+			if err = r.Create(ctx, movie); err != nil {
+				b.Fatal(reflect.TypeOf(r), err)
+			}
+
+			ids = append(ids, movie.ID)
+		}
+
+		for _, id := range ids {
+			if err = r.Delete(ctx, id); err != nil {
+				b.Fatal(reflect.TypeOf(r), err)
+			}
+		}
+	}
+
+	for _, init := range inits {
+		b.Run(init.Name, func(b *testing.B) {
 			r := init.New()
 
+			// Warmup
+			do(r)
+
 			for b.Loop() {
-				ids := []int64{}
-
-				for _, record := range records[1:1000] {
-					movie, err := benchflix.NewMovie(record)
-					if err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
-
-					if err = r.Create(ctx, movie); err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
-
-					ids = append(ids, movie.ID)
-				}
-
-				for _, id := range ids {
-					if err = r.Delete(ctx, id); err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
-				}
+				do(r)
 			}
 		})
 	}
@@ -192,7 +207,7 @@ func Test_Query(t *testing.T) {
 	}
 
 	for _, c := range queryCases {
-		for _, init := range repositories {
+		for _, init := range inits {
 			r := init.New()
 
 			t.Run(c.Name+"_"+init.Name, func(t *testing.T) {
@@ -233,8 +248,19 @@ func BenchmarkQuery(b *testing.B) {
 		b.Fatal(err)
 	}
 
+	do := func(r benchflix.Repository, c Case) {
+		movies, err := r.Query(ctx, c.Query)
+		if err != nil {
+			b.Fatal(reflect.TypeOf(r), err)
+		}
+
+		if fmt.Sprint(movies) != c.Result {
+			b.Fatal(reflect.TypeOf(r), movies)
+		}
+	}
+
 	for _, c := range queryCases {
-		for _, init := range repositories {
+		for _, init := range inits {
 			r := init.New()
 
 			for _, record := range records[1:] {
@@ -248,16 +274,12 @@ func BenchmarkQuery(b *testing.B) {
 				}
 			}
 
+			// Warmup
+			do(r, c)
+
 			b.Run(c.Name+"_"+init.Name, func(b *testing.B) {
 				for b.Loop() {
-					movies, err := r.Query(ctx, c.Query)
-					if err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
-
-					if fmt.Sprint(movies) != c.Result {
-						b.Fatal(reflect.TypeOf(r), movies)
-					}
+					do(r, c)
 				}
 			})
 		}
@@ -278,7 +300,7 @@ func Test_Read(t *testing.T) {
 	}
 
 	for _, c := range readCases {
-		for _, init := range repositories {
+		for _, init := range inits {
 			r := init.New()
 
 			t.Run(init.Name, func(t *testing.T) {
@@ -319,8 +341,19 @@ func BenchmarkRead(b *testing.B) {
 		b.Fatal(err)
 	}
 
+	do := func(r benchflix.Repository, c IDCase) {
+		movie, err := r.Read(ctx, c.ID)
+		if err != nil {
+			b.Fatal(reflect.TypeOf(r), err)
+		}
+
+		if fmt.Sprint(movie) != c.Result {
+			b.Fatal(reflect.TypeOf(r), movie)
+		}
+	}
+
 	for _, c := range readCases {
-		for _, init := range repositories {
+		for _, init := range inits {
 			r := init.New()
 
 			for _, record := range records[1:] {
@@ -334,16 +367,12 @@ func BenchmarkRead(b *testing.B) {
 				}
 			}
 
+			// Warmup
+			do(r, c)
+
 			b.Run(init.Name, func(b *testing.B) {
 				for b.Loop() {
-					movie, err := r.Read(ctx, c.ID)
-					if err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
-
-					if fmt.Sprint(movie) != c.Result {
-						b.Fatal(reflect.TypeOf(r), movie)
-					}
+					do(r, c)
 				}
 			})
 		}
