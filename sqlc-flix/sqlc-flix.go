@@ -34,7 +34,10 @@ type Repository struct {
 	DB *sql.DB
 }
 
-// Create inserts a movie and all its related data
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	return db.New(r.DB).DeleteMovie(ctx, id)
+}
+
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
 	tx, err := r.DB.BeginTx(ctx, nil)
 	if err != nil {
@@ -114,7 +117,6 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 	return nil
 }
 
-// Read loads a movie and all its related string slices
 func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error) {
 	row, err := db.New(r.DB).GetMovie(ctx, id)
 	if err != nil {
@@ -133,7 +135,6 @@ func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error)
 	}, nil
 }
 
-// Query performs a filtered search
 func (r Repository) Query(ctx context.Context, q benchflix.Query) ([]benchflix.Movie, error) {
 	params := db.QueryMoviesParams{
 		Search:      q.Search,

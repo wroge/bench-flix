@@ -33,7 +33,12 @@ type Repository struct {
 	Client *ent.Client
 }
 
-// Create implements benchflix.Repository.
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	_, err := r.Client.Movie.Delete().Where(movie.ID(id)).Exec(ctx)
+
+	return err
+}
+
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
 	tx, err := r.Client.Tx(ctx)
 	if err != nil {
@@ -109,7 +114,6 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 	return create.Exec(ctx)
 }
 
-// Query implements benchflix.Repository.
 func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchflix.Movie, error) {
 	q := r.Client.Movie.Query().
 		WithDirectors(
@@ -176,7 +180,6 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	return movies, nil
 }
 
-// Read implements benchflix.Repository.
 func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error) {
 	result, err := r.Client.Movie.Query().Where(movie.ID(id)).
 		WithDirectors(

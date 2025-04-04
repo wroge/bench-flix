@@ -16,7 +16,6 @@ import (
 	sqlflix "github.com/wroge/bench-flix/sql-flix"
 	sqlcflix "github.com/wroge/bench-flix/sqlc-flix"
 	sqltflix "github.com/wroge/bench-flix/sqlt-flix"
-	xormflix "github.com/wroge/bench-flix/xorm-flix"
 )
 
 type Repository struct {
@@ -48,10 +47,6 @@ var repositories = []Repository{
 	{
 		"bun",
 		bunflix.NewRepository,
-	},
-	{
-		"xorm",
-		xormflix.NewRepository,
 	},
 }
 
@@ -103,7 +98,7 @@ var (
 	}
 )
 
-func BenchmarkCreate(b *testing.B) {
+func BenchmarkSchemaAndCreate(b *testing.B) {
 	ctx := context.Background()
 
 	file, err := os.Open("./movies.csv")
@@ -118,17 +113,64 @@ func BenchmarkCreate(b *testing.B) {
 
 	for _, init := range repositories {
 		b.Run(init.Name, func(b *testing.B) {
+			// TODO: Warm-up phase for all benchmarks?
+
 			for b.Loop() {
 				r := init.New()
 
 				for _, record := range records[1:1000] {
 					movie, err := benchflix.NewMovie(record)
 					if err != nil {
-						b.Fatal(err)
+						b.Fatal(reflect.TypeOf(r), err)
 					}
 
 					if err = r.Create(ctx, movie); err != nil {
-						b.Fatal(err)
+						b.Fatal(reflect.TypeOf(r), err)
+					}
+				}
+			}
+		})
+	}
+}
+
+func BenchmarkCreateAndDelete(b *testing.B) {
+	ctx := context.Background()
+
+	file, err := os.Open("./movies.csv")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	records, err := csv.NewReader(file).ReadAll()
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for _, init := range repositories {
+		b.Run(init.Name, func(b *testing.B) {
+			// TODO: Warm-up phase for all benchmarks?
+
+			r := init.New()
+
+			for b.Loop() {
+				ids := []int64{}
+
+				for _, record := range records[1:1000] {
+					movie, err := benchflix.NewMovie(record)
+					if err != nil {
+						b.Fatal(reflect.TypeOf(r), err)
+					}
+
+					if err = r.Create(ctx, movie); err != nil {
+						b.Fatal(reflect.TypeOf(r), err)
+					}
+
+					ids = append(ids, movie.ID)
+				}
+
+				for _, id := range ids {
+					if err = r.Delete(ctx, id); err != nil {
+						b.Fatal(reflect.TypeOf(r), err)
 					}
 				}
 			}

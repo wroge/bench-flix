@@ -31,14 +31,14 @@ func NewRepository() benchflix.Repository {
 		);
 
 		CREATE TABLE movie_directors (
-			movie_id INTEGER REFERENCES movies (id),
-			person_id INTEGER REFERENCES people (id),
+			movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+			person_id INTEGER REFERENCES people (id) ON DELETE CASCADE,
 			PRIMARY KEY (movie_id, person_id)
 		);
 
 		CREATE TABLE movie_actors (
-			movie_id INTEGER REFERENCES movies (id),
-			person_id INTEGER REFERENCES people (id),
+			movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+			person_id INTEGER REFERENCES people (id) ON DELETE CASCADE,
 			PRIMARY KEY (movie_id, person_id)
 		);
 
@@ -48,8 +48,8 @@ func NewRepository() benchflix.Repository {
 		);
 
 		CREATE TABLE movie_countries (
-			movie_id INTEGER REFERENCES movies (id),
-			country_id INTEGER REFERENCES countries (id),
+			movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+			country_id INTEGER REFERENCES countries (id) ON DELETE CASCADE,
 			PRIMARY KEY (movie_id, country_id)
 		);
 
@@ -59,23 +59,27 @@ func NewRepository() benchflix.Repository {
 		);
 
 		CREATE TABLE movie_genres (
-			movie_id INTEGER REFERENCES movies (id),
-			genre_id INTEGER REFERENCES genres (id),
+			movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+			genre_id INTEGER REFERENCES genres (id) ON DELETE CASCADE,
 			PRIMARY KEY (movie_id, genre_id)
 		);`)
 	if err != nil {
 		panic(err)
 	}
 
-	r := Repository{
+	return Repository{
 		DB: db,
 	}
-
-	return r
 }
 
 type Repository struct {
 	DB *sql.DB
+}
+
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	_, err := r.DB.ExecContext(ctx, "DELETE FROM movies WHERE id = ?", id)
+
+	return err
 }
 
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {

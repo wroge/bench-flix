@@ -37,6 +37,9 @@ VALUES (?, ?);
 INSERT OR IGNORE INTO movie_genres (movie_id, genre_id)
 VALUES (?, ?);
 
+-- name: DeleteMovie :exec
+DELETE FROM movies WHERE id = ?;
+
 -- name: GetMovie :one
 SELECT
     movies.id,

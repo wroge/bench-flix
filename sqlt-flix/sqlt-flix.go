@@ -25,14 +25,14 @@ var (
 			);
 
 			CREATE TABLE movie_directors (
-				movie_id INTEGER REFERENCES movies (id),
-				person_id INTEGER REFERENCES people (id),
+				movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+				person_id INTEGER REFERENCES people (id) ON DELETE CASCADE,
 				PRIMARY KEY (movie_id, person_id)
 			);
 
 			CREATE TABLE movie_actors (
-				movie_id INTEGER REFERENCES movies (id),
-				person_id INTEGER REFERENCES people (id),
+				movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+				person_id INTEGER REFERENCES people (id) ON DELETE CASCADE,
 				PRIMARY KEY (movie_id, person_id)
 			);
 
@@ -42,8 +42,8 @@ var (
 			);
 
 			CREATE TABLE movie_countries (
-				movie_id INTEGER REFERENCES movies (id),
-				country_id INTEGER REFERENCES countries (id),
+				movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+				country_id INTEGER REFERENCES countries (id) ON DELETE CASCADE,
 				PRIMARY KEY (movie_id, country_id)
 			);
 
@@ -53,8 +53,8 @@ var (
 			);
 
 			CREATE TABLE movie_genres (
-				movie_id INTEGER REFERENCES movies (id),
-				genre_id INTEGER REFERENCES genres (id),
+				movie_id INTEGER REFERENCES movies (id) ON DELETE CASCADE,
+				genre_id INTEGER REFERENCES genres (id) ON DELETE CASCADE,
 				PRIMARY KEY (movie_id, genre_id)
 			);
 		`),
@@ -256,6 +256,10 @@ var (
 		{{ end }}
 		ORDER BY movies.title ASC;
 	`))
+
+	deleteMovie = sqlt.Exec[int64](sqlt.Cache{}, sqlt.Parse(`
+		DELETE FROM movies WHERE id = {{ . }};
+	`))
 )
 
 func NewRepository() benchflix.Repository {
@@ -264,34 +268,35 @@ func NewRepository() benchflix.Repository {
 		panic(err)
 	}
 
-	r := Repository{
-		DB: db,
-	}
-
 	if _, err = schema.Exec(context.Background(), db, nil); err != nil {
 		panic(err)
 	}
 
-	return r
+	return Repository{
+		DB: db,
+	}
 }
 
 type Repository struct {
 	DB *sql.DB
 }
 
-// Create implements benchflix.Repository.
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	_, err := deleteMovie.Exec(ctx, r.DB, id)
+
+	return err
+}
+
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {
 	_, err := create.Exec(ctx, r.DB, movie)
 
 	return err
 }
 
-// Query implements benchflix.Repository.
 func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchflix.Movie, error) {
 	return all.Exec(ctx, r.DB, query)
 }
 
-// Read implements benchflix.Repository.
 func (r Repository) Read(ctx context.Context, id int64) (benchflix.Movie, error) {
 	return first.Exec(ctx, r.DB, id)
 }

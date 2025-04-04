@@ -15,10 +15,10 @@ type Movie struct {
 	Title     string     `gorm:"not null"`
 	AddedAt   time.Time  `gorm:"not null"`
 	Rating    float64    `gorm:"not null"`
-	Directors []*Person  `gorm:"many2many:movie_directors"`
-	Actors    []*Person  `gorm:"many2many:movie_actors"`
-	Countries []*Country `gorm:"many2many:movie_countries"`
-	Genres    []*Genre   `gorm:"many2many:movie_genres"`
+	Directors []*Person  `gorm:"many2many:movie_directors;constraint:OnDelete:CASCADE"`
+	Actors    []*Person  `gorm:"many2many:movie_actors;constraint:OnDelete:CASCADE"`
+	Countries []*Country `gorm:"many2many:movie_countries;constraint:OnDelete:CASCADE"`
+	Genres    []*Genre   `gorm:"many2many:movie_genres;constraint:OnDelete:CASCADE"`
 }
 
 type Person struct {
@@ -77,6 +77,10 @@ func NewRepository() benchflix.Repository {
 
 type Repository struct {
 	DB *gorm.DB
+}
+
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	return r.DB.Delete(Movie{ID: id}).Error
 }
 
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {

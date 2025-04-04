@@ -2,7 +2,6 @@ package benchflix
 
 import (
 	"context"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -31,6 +30,7 @@ type Repository interface {
 	Create(ctx context.Context, movie Movie) error
 	Read(ctx context.Context, id int64) (Movie, error)
 	Query(ctx context.Context, query Query) ([]Movie, error)
+	Delete(ctx context.Context, id int64) error
 }
 
 func NewMovie(record []string) (Movie, error) {
@@ -62,17 +62,19 @@ func NewMovie(record []string) (Movie, error) {
 }
 
 func Unique(list []string) []string {
-	slices.Sort(list)
+	var (
+		seen   = map[string]bool{}
+		result []string
+	)
 
-	out := []string{}
-
-	for _, v := range slices.Compact(list) {
-		if v == "" {
+	for _, s := range list {
+		if s == "" || seen[s] {
 			continue
 		}
 
-		out = append(out, v)
+		seen[s] = true
+		result = append(result, s)
 	}
 
-	return out
+	return result
 }

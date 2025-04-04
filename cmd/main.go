@@ -7,12 +7,12 @@ import (
 	"os"
 
 	benchflix "github.com/wroge/bench-flix"
-	sqlflix "github.com/wroge/bench-flix/sql-flix"
+	bunflix "github.com/wroge/bench-flix/bun-flix"
 )
 
 func main() {
 	ctx := context.Background()
-	r := sqlflix.NewRepository()
+	r := bunflix.NewRepository()
 
 	file, err := os.Open("./movies.csv")
 	if err != nil {

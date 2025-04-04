@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -24,9 +25,13 @@ func (Movie) Fields() []ent.Field {
 // Edges of the Movie.
 func (Movie) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("directors", Person.Type),
-		edge.To("actors", Person.Type),
-		edge.To("countries", Country.Type),
-		edge.To("genres", Genre.Type),
+		edge.To("directors", Person.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)),
+		edge.To("actors", Person.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)),
+		edge.To("countries", Country.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)),
+		edge.To("genres", Genre.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)),
 	}
 }

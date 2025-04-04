@@ -118,19 +118,27 @@ func NewRepository() benchflix.Repository {
 		panic(err)
 	}
 
-	if _, err = db.NewCreateTable().Model((*MovieDirector)(nil)).Exec(context.Background()); err != nil {
+	if _, err = db.NewCreateTable().Model((*MovieDirector)(nil)).
+		ForeignKey(`(movie_id) REFERENCES movies(id) ON DELETE CASCADE`).
+		ForeignKey(`(person_id) REFERENCES people(id) ON DELETE CASCADE`).Exec(context.Background()); err != nil {
 		panic(err)
 	}
 
-	if _, err = db.NewCreateTable().Model((*MovieActor)(nil)).Exec(context.Background()); err != nil {
+	if _, err = db.NewCreateTable().Model((*MovieActor)(nil)).
+		ForeignKey(`(movie_id) REFERENCES movies(id) ON DELETE CASCADE`).
+		ForeignKey(`(person_id) REFERENCES people(id) ON DELETE CASCADE`).Exec(context.Background()); err != nil {
 		panic(err)
 	}
 
-	if _, err = db.NewCreateTable().Model((*MovieCountry)(nil)).Exec(context.Background()); err != nil {
+	if _, err = db.NewCreateTable().Model((*MovieCountry)(nil)).
+		ForeignKey(`(movie_id) REFERENCES movies(id) ON DELETE CASCADE`).
+		ForeignKey(`(country_id) REFERENCES countries(id) ON DELETE CASCADE`).Exec(context.Background()); err != nil {
 		panic(err)
 	}
 
-	if _, err = db.NewCreateTable().Model((*MovieGenre)(nil)).Exec(context.Background()); err != nil {
+	if _, err = db.NewCreateTable().Model((*MovieGenre)(nil)).
+		ForeignKey(`(movie_id) REFERENCES movies(id) ON DELETE CASCADE`).
+		ForeignKey(`(genre_id) REFERENCES genres(id) ON DELETE CASCADE`).Exec(context.Background()); err != nil {
 		panic(err)
 	}
 
@@ -141,6 +149,12 @@ func NewRepository() benchflix.Repository {
 
 type Repository struct {
 	DB *bun.DB
+}
+
+func (r Repository) Delete(ctx context.Context, id int64) error {
+	_, err := r.DB.NewDelete().Model(&Movie{}).Where("id = ?", id).Exec(ctx)
+
+	return err
 }
 
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {

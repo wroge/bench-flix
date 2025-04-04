@@ -17,7 +17,7 @@ func main() {
 	unit := flag.String("unit", "NsPerOp", "Benchmark Unit: NsPerOp | AllocedBytesPerOp | AllocsPerOp")
 	benchmark := flag.String("benchmark", "BenchmarkQuery", "Benchmark Name")
 	variants := flag.String("variants", "", "Benchmark Variants")
-	frameworks := flag.String("frameworks", "sql,gorm,sqlt,ent,sqlc,bun,xorm", "Frameworks")
+	frameworks := flag.String("frameworks", "sql,gorm,sqlt,ent,sqlc,bun", "Frameworks")
 
 	flag.Parse()
 
@@ -104,7 +104,7 @@ func main() {
 		filename += "_" + strings.ReplaceAll(*variants, ",", "")
 	}
 
-	if err := render.MakeChartSnapshot(chart.RenderContent(), filename+".png"); err != nil {
+	if err := render.MakeChartSnapshot(chart.RenderContent(), "charts/"+filename+".png"); err != nil {
 		panic(err)
 	}
 
