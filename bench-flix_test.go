@@ -124,22 +124,24 @@ func BenchmarkSchemaAndCreate(b *testing.B) {
 	}
 
 	for _, init := range inits {
-		b.Run(init.Name, func(b *testing.B) {
-			for b.Loop() {
-				r := init.New()
+		for _, num := range []int{10, 100, 1000} {
+			b.Run(fmt.Sprintf("%d_%s", num, init.Name), func(b *testing.B) {
+				for b.Loop() {
+					r := init.New()
 
-				for _, record := range records[1:1000] {
-					movie, err := benchflix.NewMovie(record)
-					if err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
-					}
+					for _, record := range records[1:1000] {
+						movie, err := benchflix.NewMovie(record)
+						if err != nil {
+							b.Fatal(reflect.TypeOf(r), err)
+						}
 
-					if err = r.Create(ctx, movie); err != nil {
-						b.Fatal(reflect.TypeOf(r), err)
+						if err = r.Create(ctx, movie); err != nil {
+							b.Fatal(reflect.TypeOf(r), err)
+						}
 					}
 				}
-			}
-		})
+			})
+		}
 	}
 }
 
@@ -156,10 +158,10 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	do := func(r benchflix.Repository) {
+	do := func(r benchflix.Repository, num int) {
 		ids := []int64{}
 
-		for _, record := range records[1:1000] {
+		for _, record := range records[1:num] {
 			movie, err := benchflix.NewMovie(record)
 			if err != nil {
 				b.Fatal(reflect.TypeOf(r), err)
@@ -180,16 +182,18 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 	}
 
 	for _, init := range inits {
-		b.Run(init.Name, func(b *testing.B) {
-			r := init.New()
+		for _, num := range []int{10, 100, 1000} {
+			b.Run(fmt.Sprintf("%d_%s", num, init.Name), func(b *testing.B) {
+				r := init.New()
 
-			// Warmup
-			do(r)
+				// Warmup
+				do(r, num)
 
-			for b.Loop() {
-				do(r)
-			}
-		})
+				for b.Loop() {
+					do(r, num)
+				}
+			})
+		}
 	}
 }
 

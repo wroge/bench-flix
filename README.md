@@ -82,13 +82,13 @@ cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Read
 
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=SchemaAndCreate
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=SchemaAndCreate
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=SchemaAndCreate
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=SchemaAndCreate --variants=1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=SchemaAndCreate --variants=1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=SchemaAndCreate --variants=1000
 
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=CreateAndDelete
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=CreateAndDelete
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=CreateAndDelete
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=CreateAndDelete --variants=1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=CreateAndDelete --variants=1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=CreateAndDelete --variants=1000
 ```
 
 ### Query
@@ -103,14 +103,26 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Create
 ![BenchmarkRead AllocsPerOp](charts/Read_AllocsPerOp.png)
 ![BenchmarkRead AllocedBytesPerOp](charts/Read_AllocedBytesPerOp.png)
 
-### Schema and Create
+### Schema and Create 10
 
-![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp.png)
-![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp.png)
-![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp.png)
+![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_10.png)
+![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_10.png)
+![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_10.png)
 
-### Create and Delete
+### Schema and Create 1000
 
-![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp.png)
-![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp.png)
-![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp.png)
+![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_1000.png)
+![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_1000.png)
+![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_1000.png)
+
+### Create and Delete 10
+
+![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_10.png)
+![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_10.png)
+![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_10.png)
+
+### Create and Delete 1000
+
+![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_1000.png)
+![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_1000.png)
+![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_1000.png)
