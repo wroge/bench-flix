@@ -49,12 +49,12 @@ BenchmarkQuery/Complex_sqlt-12          	      50	  22178939 ns/op	   14452 B/op
 BenchmarkQuery/Complex_ent-12           	      50	  22478129 ns/op	   84158 B/op	    1914 allocs/op
 BenchmarkQuery/Complex_sqlc-12          	      37	  31031416 ns/op	   13377 B/op	     250 allocs/op
 BenchmarkQuery/Complex_bun-12           	      50	  23108088 ns/op	   56310 B/op	    1126 allocs/op
-BenchmarkQuery/Mid_sql-12               	     343	   3426541 ns/op	   10923 B/op	     218 allocs/op
-BenchmarkQuery/Mid_gorm-12              	     202	   5838976 ns/op	  104482 B/op	    2029 allocs/op
-BenchmarkQuery/Mid_sqlt-12              	     350	   3401246 ns/op	   10158 B/op	     252 allocs/op
-BenchmarkQuery/Mid_ent-12               	      67	  17645468 ns/op	   67651 B/op	    1540 allocs/op
-BenchmarkQuery/Mid_sqlc-12              	     267	   4466532 ns/op	    9206 B/op	     201 allocs/op
-BenchmarkQuery/Mid_bun-12               	     334	   3541502 ns/op	   49183 B/op	     898 allocs/op
+BenchmarkQuery/_sql-12               	     343	   3426541 ns/op	   10923 B/op	     218 allocs/op
+BenchmarkQuery/_gorm-12              	     202	   5838976 ns/op	  104482 B/op	    2029 allocs/op
+BenchmarkQuery/_sqlt-12              	     350	   3401246 ns/op	   10158 B/op	     252 allocs/op
+BenchmarkQuery/_ent-12               	      67	  17645468 ns/op	   67651 B/op	    1540 allocs/op
+BenchmarkQuery/_sqlc-12              	     267	   4466532 ns/op	    9206 B/op	     201 allocs/op
+BenchmarkQuery/_bun-12               	     334	   3541502 ns/op	   49183 B/op	     898 allocs/op
 BenchmarkQuery/Simple_sql-12            	    1743	    682867 ns/op	   79277 B/op	    1676 allocs/op
 BenchmarkQuery/Simple_gorm-12           	     882	   1315990 ns/op	  606285 B/op	   12286 allocs/op
 BenchmarkQuery/Simple_sqlt-12           	    1738	    679618 ns/op	   85272 B/op	    1863 allocs/op
@@ -74,9 +74,9 @@ ok  	github.com/wroge/bench-flix	101.308s
 ## Charts
 
 ```bash
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple,Mid,Complex
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Simple,Mid,Complex
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Simple,Mid,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Simple,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Simple,Complex
 
 cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=10,100
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=10,100
@@ -97,9 +97,9 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Create
 
 ### Query
 
-![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_SimpleMidComplex.png)
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleMidComplex.png)
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleMidComplex.png)
+![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_SimpleComplex.png)
+![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleComplex.png)
+![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleComplex.png)
 
 ### Query Limit 10,100
 
