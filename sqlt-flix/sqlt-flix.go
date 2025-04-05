@@ -254,7 +254,10 @@ var (
 		{{ if .MaxRating }}
 			AND rating <= {{ .MaxRating }}
 		{{ end }}
-		ORDER BY movies.title ASC;
+		ORDER BY movies.title ASC
+		{{ if .Limit }}
+			LIMIT {{ .Limit }}
+		{{ end }};
 	`))
 
 	deleteMovie = sqlt.Exec[int64](sqlt.Cache{}, sqlt.Parse(`

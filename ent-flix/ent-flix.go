@@ -135,6 +135,10 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		).
 		Order(movie.ByTitle(sql.OrderAsc()))
 
+	if query.Limit > 0 {
+		q = q.Limit(int(query.Limit))
+	}
+
 	if query.Search != "" {
 		q.Where(movie.Or(
 			movie.HasDirectorsWith(person.NameContains(query.Search)),

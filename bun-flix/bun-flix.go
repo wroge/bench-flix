@@ -301,6 +301,10 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		}).
 		Order("title ASC")
 
+	if query.Limit > 0 {
+		q = q.Limit(int(query.Limit))
+	}
+
 	if query.Search != "" {
 		q = q.Where("(EXISTS (?) OR EXISTS (?))",
 			r.DB.NewSelect().

@@ -199,6 +199,10 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		Distinct("movies.*").
 		Order("movies.title ASC")
 
+	if query.Limit > 0 {
+		db = db.Limit(int(query.Limit))
+	}
+
 	if query.Search != "" {
 		db = db.Joins("JOIN movie_directors md ON md.movie_id = movies.id").
 			Joins("JOIN people d ON d.id = md.person_id").

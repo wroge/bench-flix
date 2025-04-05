@@ -78,6 +78,10 @@ cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --va
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Simple,Mid,Complex
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Simple,Mid,Complex
 
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=10,100
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=10,100
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=10,100
+
 cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Read
@@ -96,6 +100,12 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Create
 ![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_SimpleMidComplex.png)
 ![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleMidComplex.png)
 ![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleMidComplex.png)
+
+### Query Limit 10,100
+
+![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_10100.png)
+![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_10100.png)
+![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_10100.png)
 
 ### Read
 

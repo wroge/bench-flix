@@ -24,6 +24,7 @@ type Query struct {
 	Country                 string
 	AddedBefore, AddedAfter time.Time
 	MinRating, MaxRating    float64
+	Limit                   uint64
 }
 
 type Repository interface {

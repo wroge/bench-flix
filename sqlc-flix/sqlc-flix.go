@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"errors"
+	"fmt"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -144,11 +145,12 @@ func (r Repository) Query(ctx context.Context, q benchflix.Query) ([]benchflix.M
 		AddedBefore: sql.NullTime{Time: q.AddedBefore, Valid: !q.AddedBefore.IsZero()},
 		MinRating:   q.MinRating,
 		MaxRating:   q.MaxRating,
+		Limit:       q.Limit,
 	}
 
 	rows, err := db.New(r.DB).QueryMovies(ctx, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("HERE: %w", err)
 	}
 
 	var movies []benchflix.Movie

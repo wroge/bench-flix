@@ -304,6 +304,7 @@ WHERE
     AND (?6 <= 0 OR movies.rating >= ?6)
     AND (?7 <= 0 OR movies.rating <= ?7)
 ORDER BY movies.title ASC
+LIMIT CASE WHEN ?8 > 0 THEN ?8 ELSE -1 END
 `
 
 type QueryMoviesParams struct {
@@ -314,6 +315,7 @@ type QueryMoviesParams struct {
 	AddedBefore interface{}
 	MinRating   interface{}
 	MaxRating   interface{}
+	Limit       interface{}
 }
 
 type QueryMoviesRow struct {
@@ -336,6 +338,7 @@ func (q *Queries) QueryMovies(ctx context.Context, arg QueryMoviesParams) ([]Que
 		arg.AddedBefore,
 		arg.MinRating,
 		arg.MaxRating,
+		arg.Limit,
 	)
 	if err != nil {
 		return nil, err

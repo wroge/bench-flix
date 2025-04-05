@@ -169,4 +169,5 @@ WHERE
     AND (:added_before IS NULL OR movies.added_at <= :added_before)
     AND (:min_rating <= 0 OR movies.rating >= :min_rating)
     AND (:max_rating <= 0 OR movies.rating <= :max_rating)
-ORDER BY movies.title ASC;
+ORDER BY movies.title ASC
+LIMIT CASE WHEN :limit > 0 THEN :limit ELSE -1 END;

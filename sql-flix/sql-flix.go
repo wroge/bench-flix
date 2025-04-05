@@ -355,23 +355,30 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 	}
 
 	if !query.AddedBefore.IsZero() {
-		builder.WriteString(`AND added_at < ?`)
+		builder.WriteString(` AND added_at < ?`)
 		args = append(args, query.AddedBefore)
 	}
 
 	if !query.AddedAfter.IsZero() {
-		builder.WriteString(`AND added_at > ?`)
+		builder.WriteString(` AND added_at > ?`)
 		args = append(args, query.AddedAfter)
 	}
 
 	if query.MinRating > 0 {
-		builder.WriteString(`AND rating >= ?`)
+		builder.WriteString(` AND rating >= ?`)
 		args = append(args, query.MinRating)
 	}
 
 	if query.MaxRating > 0 {
-		builder.WriteString(`AND rating <= ?`)
+		builder.WriteString(` AND rating <= ?`)
 		args = append(args, query.MaxRating)
+	}
+
+	builder.WriteString(" ORDER BY movies.title ASC")
+
+	if query.Limit > 0 {
+		builder.WriteString(" LIMIT ?")
+		args = append(args, query.Limit)
 	}
 
 	rows, err := r.DB.QueryContext(ctx,
@@ -406,8 +413,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 					WHERE movie_genres.movie_id = movies.id
 				) AS genres
 			FROM movies
-			WHERE 1=1 %s
-			ORDER BY movies.title ASC;`,
+			WHERE 1=1 %s;`,
 			builder,
 		),
 		args...,
