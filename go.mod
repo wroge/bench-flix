@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.14.4
 	github.com/go-echarts/go-echarts/v2 v2.5.2
 	github.com/go-echarts/snapshot-chromedp v0.0.5
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/uptrace/bun v1.2.11
 	github.com/uptrace/bun/dialect/sqlitedialect v1.2.11

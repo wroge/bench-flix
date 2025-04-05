@@ -17,7 +17,7 @@ func main() {
 	unit := flag.String("unit", "NsPerOp", "Benchmark Unit: NsPerOp | AllocedBytesPerOp | AllocsPerOp")
 	benchmark := flag.String("benchmark", "BenchmarkQuery", "Benchmark Name")
 	variants := flag.String("variants", "", "Benchmark Variants")
-	frameworks := flag.String("frameworks", "sql,gorm,sqlt,ent,sqlc,bun", "Frameworks")
+	frameworks := flag.String("frameworks", "sql,gorm,sqlt,ent,sqlc,bun,sqlx", "Frameworks")
 
 	flag.Parse()
 

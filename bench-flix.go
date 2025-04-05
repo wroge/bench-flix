@@ -10,7 +10,7 @@ import (
 type Movie struct {
 	ID        int64 `xorm:"id"`
 	Title     string
-	AddedAt   time.Time
+	AddedAt   time.Time `db:"added_at"`
 	Directors []string
 	Actors    []string
 	Countries []string

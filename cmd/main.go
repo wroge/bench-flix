@@ -7,12 +7,12 @@ import (
 	"os"
 
 	benchflix "github.com/wroge/bench-flix"
-	sqlcflix "github.com/wroge/bench-flix/sqlc-flix"
+	sqlxflix "github.com/wroge/bench-flix/sqlx-flix"
 )
 
 func main() {
 	ctx := context.Background()
-	r := sqlcflix.NewRepository("sqlite3", ":memory:?_fk=1")
+	r := sqlxflix.NewRepository("sqlite3", ":memory:?_fk=1")
 
 	file, err := os.Open("./movies.csv")
 	if err != nil {
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	movies, err := r.Query(ctx, benchflix.Query{
-		Limit: 1000,
+		Limit: 10,
 	})
 	if err != nil {
 		panic(err)

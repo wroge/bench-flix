@@ -16,6 +16,7 @@ import (
 	sqlflix "github.com/wroge/bench-flix/sql-flix"
 	sqlcflix "github.com/wroge/bench-flix/sqlc-flix"
 	sqltflix "github.com/wroge/bench-flix/sqlt-flix"
+	sqlxflix "github.com/wroge/bench-flix/sqlx-flix"
 )
 
 type Init struct {
@@ -58,6 +59,12 @@ var inits = []Init{
 		"bun",
 		func() benchflix.Repository {
 			return bunflix.NewRepository("sqlite3", ":memory:?_fk=1")
+		},
+	},
+	{
+		"sqlx",
+		func() benchflix.Repository {
+			return sqlxflix.NewRepository("sqlite3", ":memory:?_fk=1")
 		},
 	},
 }
