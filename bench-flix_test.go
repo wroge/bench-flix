@@ -85,19 +85,24 @@ var (
 		{
 			Name: "Complex",
 			Query: benchflix.Query{
-				Search:  "Affleck",
-				Country: "United Kingdom",
-				Genre:   "Drama",
+				Search:      "Affleck",
+				Country:     "United Kingdom",
+				Genre:       "Drama",
+				AddedAfter:  time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+				AddedBefore: time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+				MinRating:   4,
+				MaxRating:   8,
+				Limit:       1,
 			},
-			Result: `[{68734 Argo 2012-10-11 00:00:00 +0000 UTC [Ben Affleck] [Alan Arkin Ben Affleck Bryan Cranston John Goodman Victor Garber] [United Kingdom United States of America] 7.278 [Drama Thriller]} {157336 Interstellar 2014-11-05 00:00:00 +0000 UTC [Christopher Nolan] [Anne Hathaway Casey Affleck Jessica Chastain Matthew McConaughey Michael Caine] [United Kingdom United States of America] 8.5 [Adventure Drama Science Fiction]} {37414 The Killer Inside Me 2010-02-19 00:00:00 +0000 UTC [Michael Winterbottom] [Casey Affleck Jessica Alba Kate Hudson Ned Beatty Tom Bower] [Canada Sweden United Kingdom United States of America] 5.8 [Crime Drama Thriller]} {505225 The Last Thing He Wanted 2020-02-14 00:00:00 +0000 UTC [Dee Rees] [Anne Hathaway Ben Affleck Edi Gathegi Rosie Perez Willem Dafoe] [United Kingdom United States of America] 4.9 [Drama Thriller]} {23168 The Town 2010-09-15 00:00:00 +0000 UTC [Ben Affleck] [Ben Affleck Blake Lively Jeremy Renner Jon Hamm Rebecca Hall] [United Kingdom United States of America] 7.2 [Crime Drama Thriller]}]`,
+			Result: `[{505225 The Last Thing He Wanted 2020-02-14 00:00:00 +0000 UTC [Dee Rees] [Anne Hathaway Ben Affleck Edi Gathegi Rosie Perez Willem Dafoe] [United Kingdom United States of America] 4.9 [Drama Thriller]}]`,
 		},
 		{
 			Name: "Simple",
 			Query: benchflix.Query{
-				Search:     "Affleck",
-				AddedAfter: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
+				MinRating: 9,
+				Limit:     1,
 			},
-			Result: `[{916728 Slingshot 2024-08-30 00:00:00 +0000 UTC [Mikael Håfström] [Casey Affleck David Morrissey Emily Beecham Laurence Fishburne Tomer Capone] [Hungary United States of America] 6.1 [Science Fiction Thriller]} {870028 The Accountant 2 2025-04-23 00:00:00 +0000 UTC [Gavin O'Connor] [Ben Affleck Cynthia Addai-Robinson Daniella Pineda J.K. Simmons Jon Bernthal] [United States of America] 0 [Action Crime Thriller]} {1059064 The Instigators 2024-08-02 00:00:00 +0000 UTC [Doug Liman] [Casey Affleck Jack Harlow Matt Damon Michael Stuhlbarg Ving Rhames] [United States of America] 6.2 [Action Comedy Crime]} {1217343 This Is Me…Now 2024-02-15 00:00:00 +0000 UTC [Dave Meyers] [Ben Affleck Fat Joe Idaliz Christian Jennifer Lopez Matthew Law] [United States of America] 5.3 [Drama Music]}]`,
+			Result: `[{1310741 A Brother and 7 Siblings 2025-01-23 00:00:00 +0000 UTC [Yandy Laurens] [Ahmad Nadif Amanda Rawles Chicco Kurniawan Fatih Unru Freya Jayawardana] [Indonesia] 9.3 [Drama Family]}]`,
 		},
 		{
 			Name: "10",
