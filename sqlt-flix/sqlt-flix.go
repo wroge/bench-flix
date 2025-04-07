@@ -73,6 +73,7 @@ var (
 					({{ $p }})
 				{{ end }}
 				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+				{{ ScanInt64 "" }}
 			{{ end }}
 		`)),
 		sqlt.All[benchflix.Movie, int64](sqlt.Name("ActorIDs"), sqlt.Parse(`
@@ -83,6 +84,7 @@ var (
 					({{ $p }})
 				{{ end }}
 				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+				{{ ScanInt64 "" }}
 			{{ end }}
 		`)),
 		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
@@ -111,6 +113,7 @@ var (
 					({{ $p }})
 				{{ end }}
 				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+				{{ ScanInt64 "" }}
 			{{ end }}
 		`)),
 		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
@@ -130,6 +133,7 @@ var (
 					({{ $p }})
 				{{ end }}
 				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+				{{ ScanInt64 "" }}
 			{{ end }}
 		`)),
 		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
