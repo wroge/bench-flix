@@ -52,4 +52,6 @@ func main() {
 	}
 
 	fmt.Println(movies)
+
+	fmt.Println(r.Read(ctx, 1310741))
 }
