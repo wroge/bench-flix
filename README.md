@@ -125,6 +125,10 @@ cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --va
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=10,100
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=10,100
 
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=100,1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=100,1000
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=100,1000
+
 cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Read
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Read
@@ -146,45 +150,36 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=CreateAndDelete --variants=10
 ```
 
-### Query
+### NsPerOp
 
 ![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_SimpleComplex.png)
 ![BenchmarkQuery Simple NsPerOp](charts/Query_NsPerOp_Simple.png)
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleComplex.png)
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleComplex.png)
-
-### Query Limit 10,100
-
 ![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_10100.png)
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_10100.png)
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_10100.png)
-
-### Read
-
+![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_1001000.png)
 ![BenchmarkRead NsPerOp](charts/Read_NsPerOp.png)
-![BenchmarkRead AllocsPerOp](charts/Read_AllocsPerOp.png)
-![BenchmarkRead AllocedBytesPerOp](charts/Read_AllocedBytesPerOp.png)
-
-### Schema and Create 10
-
 ![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_10.png)
-![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_10.png)
-![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_10.png)
-
-### Schema and Create 1000
-
 ![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_1000.png)
-![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_1000.png)
-![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_1000.png)
-
-### Create and Delete 10
-
 ![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_10.png)
-![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_10.png)
-![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_10.png)
-
-### Create and Delete 1000
-
 ![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_1000.png)
+
+## AllocsPerOp
+
+![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleComplex.png)
+![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_10100.png)
+![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_1001000.png)
+![BenchmarkRead AllocsPerOp](charts/Read_AllocsPerOp.png)
+![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_10.png)
+![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_1000.png)
+![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_10.png)
 ![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_1000.png)
+
+## AllocedBytesPerOp
+
+![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleComplex.png)
+![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_10100.png)
+![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_1001000.png)
+![BenchmarkRead AllocedBytesPerOp](charts/Read_AllocedBytesPerOp.png)
+![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_10.png)
+![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_1000.png)
+![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_10.png)
 ![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_1000.png)
