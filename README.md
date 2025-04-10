@@ -32,94 +32,104 @@ goos: darwin
 goarch: arm64
 pkg: github.com/wroge/bench-flix
 cpu: Apple M3 Pro
-BenchmarkSchemaAndCreate/10_sql-12         	      12	  94360608 ns/op	10294918 B/op	  252151 allocs/op
-BenchmarkSchemaAndCreate/100_sql-12        	      12	  97432215 ns/op	10270840 B/op	  252025 allocs/op
-BenchmarkSchemaAndCreate/1000_sql-12       	      12	  93470951 ns/op	10282070 B/op	  252158 allocs/op
-BenchmarkSchemaAndCreate/10_gorm-12        	       6	 187791639 ns/op	90624132 B/op	 1125784 allocs/op
-BenchmarkSchemaAndCreate/100_gorm-12       	       6	 186929583 ns/op	90616417 B/op	 1125653 allocs/op
-BenchmarkSchemaAndCreate/1000_gorm-12      	       6	 191272660 ns/op	90621290 B/op	 1125675 allocs/op
-BenchmarkSchemaAndCreate/10_sqlt-12        	       8	 127138646 ns/op	20493351 B/op	  530708 allocs/op
-BenchmarkSchemaAndCreate/100_sqlt-12       	       8	 125601114 ns/op	20467823 B/op	  530536 allocs/op
-BenchmarkSchemaAndCreate/1000_sqlt-12      	       8	 125861359 ns/op	20472468 B/op	  530569 allocs/op
-BenchmarkSchemaAndCreate/10_ent-12         	       6	 175476028 ns/op	40342681 B/op	 1002197 allocs/op
-BenchmarkSchemaAndCreate/100_ent-12        	       6	 175361826 ns/op	40351362 B/op	 1002187 allocs/op
-BenchmarkSchemaAndCreate/1000_ent-12       	       6	 175570299 ns/op	40341521 B/op	 1002185 allocs/op
-BenchmarkSchemaAndCreate/10_sqlc-12        	       7	 153225631 ns/op	14812410 B/op	  462513 allocs/op
-BenchmarkSchemaAndCreate/100_sqlc-12       	       7	 152654232 ns/op	14801774 B/op	  462423 allocs/op
-BenchmarkSchemaAndCreate/1000_sqlc-12      	       7	 152977387 ns/op	14810838 B/op	  462503 allocs/op
-BenchmarkSchemaAndCreate/10_bun-12         	       7	 162393929 ns/op	82706092 B/op	  428073 allocs/op
-BenchmarkSchemaAndCreate/100_bun-12        	       7	 162955619 ns/op	82696644 B/op	  428041 allocs/op
-BenchmarkSchemaAndCreate/1000_bun-12       	       7	 163419476 ns/op	82697113 B/op	  428042 allocs/op
-BenchmarkSchemaAndCreate/10_sqlx-12        	      12	  96272139 ns/op	11190923 B/op	  290344 allocs/op
-BenchmarkSchemaAndCreate/100_sqlx-12       	      12	  96388542 ns/op	11194400 B/op	  290367 allocs/op
-BenchmarkSchemaAndCreate/1000_sqlx-12      	      12	  96384184 ns/op	11190764 B/op	  290344 allocs/op
-BenchmarkCreateAndDelete/10_sql-12         	    1276	    931252 ns/op	   98761 B/op	    2317 allocs/op
-BenchmarkCreateAndDelete/100_sql-12        	     100	  10801566 ns/op	 1067410 B/op	   25752 allocs/op
-BenchmarkCreateAndDelete/1000_sql-12       	       9	 115701657 ns/op	10542736 B/op	  262944 allocs/op
-BenchmarkCreateAndDelete/10_gorm-12        	     723	   1647055 ns/op	  855731 B/op	   10621 allocs/op
-BenchmarkCreateAndDelete/100_gorm-12       	      61	  18361060 ns/op	 9302925 B/op	  115669 allocs/op
-BenchmarkCreateAndDelete/1000_gorm-12      	       6	 186661785 ns/op	93420720 B/op	 1160420 allocs/op
-BenchmarkCreateAndDelete/10_sqlt-12        	     948	   1251934 ns/op	  194873 B/op	    5004 allocs/op
-BenchmarkCreateAndDelete/100_sqlt-12       	      82	  14229435 ns/op	 2104310 B/op	   54373 allocs/op
-BenchmarkCreateAndDelete/1000_sqlt-12      	       7	 148622262 ns/op	20806260 B/op	  542305 allocs/op
-BenchmarkCreateAndDelete/10_ent-12         	     661	   1800886 ns/op	  407903 B/op	    9915 allocs/op
-BenchmarkCreateAndDelete/100_ent-12        	      60	  19902110 ns/op	 4362247 B/op	  106881 allocs/op
-BenchmarkCreateAndDelete/1000_ent-12       	       6	 199222778 ns/op	42255909 B/op	 1044291 allocs/op
-BenchmarkCreateAndDelete/10_sqlc-12        	     772	   1544862 ns/op	  145760 B/op	    4514 allocs/op
-BenchmarkCreateAndDelete/100_sqlc-12       	      68	  17350690 ns/op	 1564708 B/op	   48760 allocs/op
-BenchmarkCreateAndDelete/1000_sqlc-12      	       6	 176613688 ns/op	15121450 B/op	  474592 allocs/op
-BenchmarkCreateAndDelete/10_bun-12         	     722	   1645233 ns/op	  839003 B/op	    4205 allocs/op
-BenchmarkCreateAndDelete/100_bun-12        	      63	  18245379 ns/op	 8988424 B/op	   45269 allocs/op
-BenchmarkCreateAndDelete/1000_bun-12       	       6	 183683243 ns/op	87683642 B/op	  442679 allocs/op
-BenchmarkCreateAndDelete/10_sqlx-12        	    1251	    959935 ns/op	  107684 B/op	    2689 allocs/op
-BenchmarkCreateAndDelete/100_sqlx-12       	     100	  11043222 ns/op	 1161599 B/op	   29713 allocs/op
-BenchmarkCreateAndDelete/1000_sqlx-12      	       9	 117067602 ns/op	11464606 B/op	  301254 allocs/op
-BenchmarkQuery/Complex_sql-12              	     142	   8338669 ns/op	    8421 B/op	     101 allocs/op
-BenchmarkQuery/Complex_gorm-12             	     207	   5742300 ns/op	   74886 B/op	    1154 allocs/op
-BenchmarkQuery/Complex_sqlt-12             	     144	   8357090 ns/op	    5334 B/op	     112 allocs/op
-BenchmarkQuery/Complex_ent-12              	      51	  22468297 ns/op	   64617 B/op	    1282 allocs/op
-BenchmarkQuery/Complex_sqlc-12             	     100	  10847980 ns/op	    3854 B/op	      91 allocs/op
-BenchmarkQuery/Complex_bun-12              	     140	   8522398 ns/op	   41206 B/op	     462 allocs/op
-BenchmarkQuery/Complex_sqlx-12             	     140	   8452010 ns/op	    9117 B/op	     103 allocs/op
-BenchmarkQuery/Simple_sql-12               	    2857	    418273 ns/op	    3922 B/op	      83 allocs/op
-BenchmarkQuery/Simple_gorm-12              	    2539	    484518 ns/op	   61581 B/op	     978 allocs/op
-BenchmarkQuery/Simple_sqlt-12              	    2889	    423011 ns/op	    4236 B/op	     103 allocs/op
-BenchmarkQuery/Simple_ent-12               	    2547	    449421 ns/op	   32214 B/op	     822 allocs/op
-BenchmarkQuery/Simple_sqlc-12              	    1768	    690241 ns/op	    3490 B/op	      77 allocs/op
-BenchmarkQuery/Simple_bun-12               	    2493	    455560 ns/op	   36641 B/op	     406 allocs/op
-BenchmarkQuery/Simple_sqlx-12              	    2875	    431111 ns/op	    4626 B/op	      85 allocs/op
-BenchmarkQuery/10_sql-12                   	     952	   1261270 ns/op	   21224 B/op	     461 allocs/op
-BenchmarkQuery/10_gorm-12                  	     748	   1564330 ns/op	  178369 B/op	    3798 allocs/op
-BenchmarkQuery/10_sqlt-12                  	     954	   1251486 ns/op	   23168 B/op	     529 allocs/op
-BenchmarkQuery/10_ent-12                   	    1256	    951683 ns/op	   98797 B/op	    2269 allocs/op
-BenchmarkQuery/10_sqlc-12                  	     610	   1959994 ns/op	   23618 B/op	     425 allocs/op
-BenchmarkQuery/10_bun-12                   	    1267	    954175 ns/op	   71768 B/op	    1741 allocs/op
-BenchmarkQuery/10_sqlx-12                  	     811	   1340353 ns/op	   26276 B/op	     436 allocs/op
-BenchmarkQuery/100_sql-12                  	     286	   4152450 ns/op	  186957 B/op	    4254 allocs/op
-BenchmarkQuery/100_gorm-12                 	     294	   3904153 ns/op	 1535519 B/op	   30597 allocs/op
-BenchmarkQuery/100_sqlt-12                 	     290	   4321392 ns/op	  204305 B/op	    4766 allocs/op
-BenchmarkQuery/100_ent-12                  	     514	   2331446 ns/op	  772075 B/op	   16486 allocs/op
-BenchmarkQuery/100_sqlc-12                 	     223	   5998671 ns/op	  206792 B/op	    3861 allocs/op
-BenchmarkQuery/100_bun-12                  	     523	   2378640 ns/op	  435782 B/op	   15238 allocs/op
-BenchmarkQuery/100_sqlx-12                 	     274	   4480032 ns/op	  227848 B/op	    3959 allocs/op
-BenchmarkRead/sql-12                       	   45531	     26243 ns/op	    2384 B/op	      69 allocs/op
-BenchmarkRead/gorm-12                      	   13512	     89024 ns/op	   60052 B/op	    1004 allocs/op
-BenchmarkRead/sqlt-12                      	   45225	     26555 ns/op	    3777 B/op	      93 allocs/op
-BenchmarkRead/ent-12                       	   19809	     59521 ns/op	   33622 B/op	     848 allocs/op
-BenchmarkRead/sqlc-12                      	   38119	     31347 ns/op	    2296 B/op	      67 allocs/op
-BenchmarkRead/bun-12                       	   23702	     50582 ns/op	   36543 B/op	     414 allocs/op
-BenchmarkRead/sqlx-12                      	   45387	     26200 ns/op	    2784 B/op	      70 allocs/op
+BenchmarkSchemaAndCreate/10_sql-12         	      12	  94292323 ns/op	10290410 B/op	  252120 allocs/op
+BenchmarkSchemaAndCreate/100_sql-12        	      12	  92778951 ns/op	10274226 B/op	  252056 allocs/op
+BenchmarkSchemaAndCreate/1000_sql-12       	      12	  92720413 ns/op	10273231 B/op	  252063 allocs/op
+BenchmarkSchemaAndCreate/10_gorm-12        	       6	 189638910 ns/op	90623330 B/op	 1125683 allocs/op
+BenchmarkSchemaAndCreate/100_gorm-12       	       6	 188666188 ns/op	90603820 B/op	 1125532 allocs/op
+BenchmarkSchemaAndCreate/1000_gorm-12      	       6	 188434944 ns/op	90593038 B/op	 1125572 allocs/op
+BenchmarkSchemaAndCreate/10_sqlt-12        	       9	 123544458 ns/op	19909539 B/op	  506547 allocs/op
+BenchmarkSchemaAndCreate/100_sqlt-12       	       9	 124740384 ns/op	19913685 B/op	  506577 allocs/op
+BenchmarkSchemaAndCreate/1000_sqlt-12      	       9	 123132505 ns/op	19881050 B/op	  506398 allocs/op
+BenchmarkSchemaAndCreate/10_ent-12         	       6	 179884410 ns/op	40332941 B/op	 1002103 allocs/op
+BenchmarkSchemaAndCreate/100_ent-12        	       6	 177400785 ns/op	40336877 B/op	 1002084 allocs/op
+BenchmarkSchemaAndCreate/1000_ent-12       	       6	 182429930 ns/op	40331977 B/op	 1002101 allocs/op
+BenchmarkSchemaAndCreate/10_sqlc-12        	       7	 155193351 ns/op	14815485 B/op	  462581 allocs/op
+BenchmarkSchemaAndCreate/100_sqlc-12       	       7	 153154393 ns/op	14805340 B/op	  462451 allocs/op
+BenchmarkSchemaAndCreate/1000_sqlc-12      	       7	 153948381 ns/op	14814710 B/op	  462525 allocs/op
+BenchmarkSchemaAndCreate/10_bun-12         	       6	 166834000 ns/op	82691378 B/op	  428001 allocs/op
+BenchmarkSchemaAndCreate/100_bun-12        	       7	 166627292 ns/op	82700962 B/op	  428066 allocs/op
+BenchmarkSchemaAndCreate/1000_bun-12       	       7	 166587018 ns/op	82684958 B/op	  427996 allocs/op
+BenchmarkSchemaAndCreate/10_sqlx-12        	      12	  97162694 ns/op	11191920 B/op	  290348 allocs/op
+BenchmarkSchemaAndCreate/100_sqlx-12       	      12	  96864493 ns/op	11193420 B/op	  290362 allocs/op
+BenchmarkSchemaAndCreate/1000_sqlx-12      	      12	  97340354 ns/op	11192984 B/op	  290352 allocs/op
+BenchmarkCreateAndDelete/10_sql-12         	    1270	    936850 ns/op	   98790 B/op	    2317 allocs/op
+BenchmarkCreateAndDelete/100_sql-12        	     100	  10819881 ns/op	 1067660 B/op	   25754 allocs/op
+BenchmarkCreateAndDelete/1000_sql-12       	       9	 114907648 ns/op	10540991 B/op	  262920 allocs/op
+BenchmarkCreateAndDelete/10_gorm-12        	     712	   1657563 ns/op	  855691 B/op	   10621 allocs/op
+BenchmarkCreateAndDelete/100_gorm-12       	      63	  18439048 ns/op	 9302461 B/op	  115662 allocs/op
+BenchmarkCreateAndDelete/1000_gorm-12      	       6	 187508056 ns/op	93418561 B/op	 1160378 allocs/op
+BenchmarkCreateAndDelete/10_sqlt-12        	     981	   1219177 ns/op	  189643 B/op	    4786 allocs/op
+BenchmarkCreateAndDelete/100_sqlt-12       	      85	  13953433 ns/op	 2042349 B/op	   51968 allocs/op
+BenchmarkCreateAndDelete/1000_sqlt-12      	       7	 150158369 ns/op	20252381 B/op	  518368 allocs/op
+BenchmarkCreateAndDelete/10_ent-12         	     661	   1811511 ns/op	  407899 B/op	    9915 allocs/op
+BenchmarkCreateAndDelete/100_ent-12        	      58	  20070946 ns/op	 4361777 B/op	  106877 allocs/op
+BenchmarkCreateAndDelete/1000_ent-12       	       5	 200708558 ns/op	42255334 B/op	 1044292 allocs/op
+BenchmarkCreateAndDelete/10_sqlc-12        	     775	   1534089 ns/op	  145522 B/op	    4512 allocs/op
+BenchmarkCreateAndDelete/100_sqlc-12       	      68	  17128691 ns/op	 1565861 B/op	   48774 allocs/op
+BenchmarkCreateAndDelete/1000_sqlc-12      	       6	 171550930 ns/op	15101656 B/op	  474433 allocs/op
+BenchmarkCreateAndDelete/10_bun-12         	     712	   1664773 ns/op	  838860 B/op	    4204 allocs/op
+BenchmarkCreateAndDelete/100_bun-12        	      61	  18482674 ns/op	 8984428 B/op	   45233 allocs/op
+BenchmarkCreateAndDelete/1000_bun-12       	       6	 186506472 ns/op	87581506 B/op	  441772 allocs/op
+BenchmarkCreateAndDelete/10_sqlx-12        	    1234	    953471 ns/op	  107548 B/op	    2688 allocs/op
+BenchmarkCreateAndDelete/100_sqlx-12       	     100	  11017500 ns/op	 1161610 B/op	   29713 allocs/op
+BenchmarkCreateAndDelete/1000_sqlx-12      	       9	 117399125 ns/op	11462245 B/op	  301221 allocs/op
+BenchmarkQuery/Complex_sql-12              	     144	   8289477 ns/op	    8393 B/op	     101 allocs/op
+BenchmarkQuery/Complex_gorm-12             	     206	   5784740 ns/op	   74877 B/op	    1154 allocs/op
+BenchmarkQuery/Complex_sqlt-12             	     144	   8317835 ns/op	    5472 B/op	     112 allocs/op
+BenchmarkQuery/Complex_ent-12              	      52	  22931608 ns/op	   64612 B/op	    1282 allocs/op
+BenchmarkQuery/Complex_sqlc-12             	     100	  10545107 ns/op	    3854 B/op	      91 allocs/op
+BenchmarkQuery/Complex_bun-12              	     141	   8404332 ns/op	   41203 B/op	     462 allocs/op
+BenchmarkQuery/Complex_sqlx-12             	     144	   8297510 ns/op	    9090 B/op	     103 allocs/op
+BenchmarkQuery/1_sql-12             	    1290	    930175 ns/op	    3885 B/op	      82 allocs/op
+BenchmarkQuery/1_gorm-12            	     926	   1292564 ns/op	   60841 B/op	     947 allocs/op
+BenchmarkQuery/1_sqlt-12            	    1294	    927681 ns/op	    4312 B/op	     102 allocs/op
+BenchmarkQuery/1_ent-12             	    1360	    879439 ns/op	   31671 B/op	     806 allocs/op
+BenchmarkQuery/1_sqlc-12            	     751	   1596223 ns/op	    3452 B/op	      76 allocs/op
+BenchmarkQuery/1_bun-12             	    1257	    951663 ns/op	   36472 B/op	     394 allocs/op
+BenchmarkQuery/1_sqlx-12            	    1291	    932812 ns/op	    4589 B/op	      84 allocs/op
+BenchmarkQuery/10_sql-12            	     909	   1313811 ns/op	   14524 B/op	     272 allocs/op
+BenchmarkQuery/10_gorm-12           	     758	   1615528 ns/op	  175698 B/op	    3726 allocs/op
+BenchmarkQuery/10_sqlt-12           	     904	   1325105 ns/op	   16545 B/op	     337 allocs/op
+BenchmarkQuery/10_ent-12            	    1140	   1049995 ns/op	   94624 B/op	    2151 allocs/op
+BenchmarkQuery/10_sqlc-12           	     597	   1992762 ns/op	   16728 B/op	     234 allocs/op
+BenchmarkQuery/10_bun-12            	    1065	   1101878 ns/op	   65489 B/op	    1592 allocs/op
+BenchmarkQuery/10_sqlx-12           	     908	   1314202 ns/op	   19575 B/op	     247 allocs/op
+BenchmarkQuery/100_sql-12           	     298	   4019802 ns/op	  116978 B/op	    2327 allocs/op
+BenchmarkQuery/100_gorm-12          	     321	   3726342 ns/op	 1488386 B/op	   29369 allocs/op
+BenchmarkQuery/100_sqlt-12          	     295	   4052742 ns/op	  135102 B/op	    2840 allocs/op
+BenchmarkQuery/100_ent-12           	     512	   2329799 ns/op	  715884 B/op	   14938 allocs/op
+BenchmarkQuery/100_sqlc-12          	     240	   4950798 ns/op	  136288 B/op	    1932 allocs/op
+BenchmarkQuery/100_bun-12           	     508	   2358201 ns/op	  370417 B/op	   13623 allocs/op
+BenchmarkQuery/100_sqlx-12          	     297	   4026605 ns/op	  158369 B/op	    2032 allocs/op
+BenchmarkQuery/1000_sql-12          	      58	  20053754 ns/op	 1071122 B/op	   22864 allocs/op
+BenchmarkQuery/1000_gorm-12         	      46	  24912933 ns/op	14218559 B/op	  274188 allocs/op
+BenchmarkQuery/1000_sqlt-12         	      57	  20336845 ns/op	 1251123 B/op	   27825 allocs/op
+BenchmarkQuery/1000_ent-12          	      73	  16166292 ns/op	 6693481 B/op	  139665 allocs/op
+BenchmarkQuery/1000_sqlc-12         	      52	  22217925 ns/op	 1343661 B/op	   18873 allocs/op
+BenchmarkQuery/1000_bun-12          	      72	  17248619 ns/op	 3914087 B/op	  134005 allocs/op
+BenchmarkQuery/1000_sqlx-12         	      56	  20252008 ns/op	 1699512 B/op	   19870 allocs/op
+BenchmarkRead/sql-12                       	   46978	     25531 ns/op	    2384 B/op	      69 allocs/op
+BenchmarkRead/gorm-12                      	   13626	     87987 ns/op	   60054 B/op	    1004 allocs/op
+BenchmarkRead/sqlt-12                      	   44745	     26649 ns/op	    3905 B/op	      93 allocs/op
+BenchmarkRead/ent-12                       	   20312	     58880 ns/op	   33622 B/op	     848 allocs/op
+BenchmarkRead/sqlc-12                      	   38113	     31425 ns/op	    2296 B/op	      67 allocs/op
+BenchmarkRead/bun-12                       	   25462	     47574 ns/op	   36543 B/op	     414 allocs/op
+BenchmarkRead/sqlx-12                      	   46026	     26100 ns/op	    2784 B/op	      70 allocs/op
 PASS
-ok  	github.com/wroge/bench-flix	174.058s
+ok  	github.com/wroge/bench-flix	199.204s
 ```
 
 ## Charts
 
 ```bash
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple,Complex
-cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Simple
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Simple,Complex
-cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Simple,Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=Complex
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=Complex
+
+cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=1,10
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=1,10
+cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Query --variants=1,10
 
 cat bench.out | go run ./cmd/chart/main.go --unit=NsPerOp --benchmark=Query --variants=10,100
 cat bench.out | go run ./cmd/chart/main.go --unit=AllocedBytesPerOp --benchmark=Query --variants=10,100
@@ -152,34 +162,36 @@ cat bench.out | go run ./cmd/chart/main.go --unit=AllocsPerOp --benchmark=Create
 
 ### NsPerOp
 
-![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_SimpleComplex.png)
-![BenchmarkQuery Simple NsPerOp](charts/Query_NsPerOp_Simple.png)
-![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_10100.png)
-![BenchmarkQuery NsPerOp](charts/Query_NsPerOp_1001000.png)
-![BenchmarkRead NsPerOp](charts/Read_NsPerOp.png)
-![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_10.png)
-![BenchmarkSchemaAndCreate NsPerOp](charts/SchemaAndCreate_NsPerOp_1000.png)
-![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_10.png)
-![BenchmarkCreateAndDelete NsPerOp](charts/CreateAndDelete_NsPerOp_1000.png)
+![](charts/Query_NsPerOp_Complex.png)
+![](charts/Query_NsPerOp_110.png)
+![](charts/Query_NsPerOp_10100.png)
+![](charts/Query_NsPerOp_1001000.png)
+![](charts/Read_NsPerOp.png)
+![](charts/SchemaAndCreate_NsPerOp_10.png)
+![](charts/SchemaAndCreate_NsPerOp_1000.png)
+![](charts/CreateAndDelete_NsPerOp_10.png)
+![](charts/CreateAndDelete_NsPerOp_1000.png)
 
 ## AllocsPerOp
 
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_SimpleComplex.png)
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_10100.png)
-![BenchmarkQuery AllocsPerOp](charts/Query_AllocsPerOp_1001000.png)
-![BenchmarkRead AllocsPerOp](charts/Read_AllocsPerOp.png)
-![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_10.png)
-![BenchmarkSchemaAndCreate AllocsPerOp](charts/SchemaAndCreate_AllocsPerOp_1000.png)
-![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_10.png)
-![BenchmarkCreateAndDelete AllocsPerOp](charts/CreateAndDelete_AllocsPerOp_1000.png)
+![](charts/Query_AllocsPerOp_Complex.png)
+![](charts/Query_AllocsPerOp_110.png)
+![](charts/Query_AllocsPerOp_10100.png)
+![](charts/Query_AllocsPerOp_1001000.png)
+![](charts/Read_AllocsPerOp.png)
+![](charts/SchemaAndCreate_AllocsPerOp_10.png)
+![](charts/SchemaAndCreate_AllocsPerOp_1000.png)
+![](charts/CreateAndDelete_AllocsPerOp_10.png)
+![](charts/CreateAndDelete_AllocsPerOp_1000.png)
 
 ## AllocedBytesPerOp
 
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_SimpleComplex.png)
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_10100.png)
-![BenchmarkQuery AllocedBytesPerOp](charts/Query_AllocedBytesPerOp_1001000.png)
-![BenchmarkRead AllocedBytesPerOp](charts/Read_AllocedBytesPerOp.png)
-![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_10.png)
-![BenchmarkSchemaAndCreate AllocedBytesPerOp](charts/SchemaAndCreate_AllocedBytesPerOp_1000.png)
-![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_10.png)
-![BenchmarkCreateAndDelete AllocedBytesPerOp](charts/CreateAndDelete_AllocedBytesPerOp_1000.png)
+![](charts/Query_AllocedBytesPerOp_Complex.png)
+![](charts/Query_AllocedBytesPerOp_110.png)
+![](charts/Query_AllocedBytesPerOp_10100.png)
+![](charts/Query_AllocedBytesPerOp_1001000.png)
+![](charts/Read_AllocedBytesPerOp.png)
+![](charts/SchemaAndCreate_AllocedBytesPerOp_10.png)
+![](charts/SchemaAndCreate_AllocedBytesPerOp_1000.png)
+![](charts/CreateAndDelete_AllocedBytesPerOp_10.png)
+![](charts/CreateAndDelete_AllocedBytesPerOp_1000.png)

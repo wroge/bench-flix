@@ -143,10 +143,10 @@ var (
 
 	first = sqlt.First[int64, benchflix.Movie](sqlt.Cache{}, sqlt.Parse(`
 		SELECT
-			movies.id,		{{ ScanInt64 "ID" }}
+			movies.id,		{{ ScanInt "ID" }}
 			movies.title,		{{ ScanString "Title" }}
 			movies.added_at,	{{ ScanTime "AddedAt" }}
-			movies.rating,		{{ ScanFloat64 "Rating" }}
+			movies.rating,		{{ ScanFloat "Rating" }}
 			(
 				SELECT GROUP_CONCAT(people.name ORDER BY people.name)
 				FROM movie_directors
@@ -178,10 +178,10 @@ var (
 
 	all = sqlt.All[benchflix.Query, benchflix.Movie](sqlt.Cache{}, sqlt.Parse(`
 		SELECT
-			movies.id,		{{ ScanInt64 "ID" }}
+			movies.id,		{{ ScanInt "ID" }}
 			movies.title,		{{ ScanString "Title" }}
 			movies.added_at,	{{ ScanTime "AddedAt" }}
-			movies.rating,		{{ ScanFloat64 "Rating" }}
+			movies.rating,		{{ ScanFloat "Rating" }}
 			(
 				SELECT GROUP_CONCAT(people.name ORDER BY people.name)
 				FROM movie_directors

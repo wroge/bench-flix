@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/uptrace/bun v1.2.11
 	github.com/uptrace/bun/dialect/sqlitedialect v1.2.11
-	github.com/wroge/sqlt v0.3.7
+	github.com/wroge/sqlt v0.3.8
 	golang.org/x/tools v0.30.0
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12

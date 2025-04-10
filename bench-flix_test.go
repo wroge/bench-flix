@@ -99,32 +99,35 @@ var (
 			Result:    `[{505225 The Last Thing He Wanted 2020-02-14 00:00:00 +0000 UTC [Dee Rees] [Anne Hathaway Ben Affleck Edi Gathegi Rosie Perez Willem Dafoe] [United Kingdom United States of America] 4.9 [Drama Thriller]}]`,
 		},
 		{
-			Name: "Simple",
+			Name: "1",
 			Query: benchflix.Query{
-				MinRating: 9,
+				MinRating: 5,
 				Limit:     1,
 			},
 			ResultLen: 1,
-			Result:    `[{1310741 A Brother and 7 Siblings 2025-01-23 00:00:00 +0000 UTC [Yandy Laurens] [Ahmad Nadif Amanda Rawles Chicco Kurniawan Fatih Unru Freya Jayawardana] [Indonesia] 9.3 [Drama Family]}]`,
+			Result:    `[{1013577 "Sr." 2022-09-02 00:00:00 +0000 UTC [Chris Smith] [Alan Arkin Chris Smith Robert Downey Jr. Robert Downey Sr. Sean Hayes] [United States of America] 6.9 [Documentary]}]`,
 		},
 		{
 			Name: "10",
 			Query: benchflix.Query{
-				Limit: 10,
+				MinRating: 5,
+				Limit:     10,
 			},
 			ResultLen: 10,
 		},
 		{
 			Name: "100",
 			Query: benchflix.Query{
-				Limit: 100,
+				MinRating: 5,
+				Limit:     100,
 			},
 			ResultLen: 100,
 		},
 		{
 			Name: "1000",
 			Query: benchflix.Query{
-				Limit: 1000,
+				MinRating: 5,
+				Limit:     1000,
 			},
 			ResultLen: 1000,
 		},
