@@ -83,6 +83,13 @@ func (r Repository) Delete(ctx context.Context, id int64) error {
 }
 
 func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
+	var (
+		actorsLen    = len(movie.Actors)
+		directorsLen = len(movie.Directors)
+		countriesLen = len(movie.Countries)
+		genresLen    = len(movie.Genres)
+	)
+
 	tx, err := r.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -104,19 +111,19 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		return err
 	}
 
-	if len(movie.Directors) > 0 {
-		directorNames := make([]any, len(movie.Directors))
+	if actorsLen+directorsLen > 0 {
+		peopleArgs := make([]any, directorsLen+actorsLen)
 
-		for i, p := range movie.Directors {
-			directorNames[i] = p
+		for i, p := range append(movie.Directors, movie.Actors...) {
+			peopleArgs[i] = p
 		}
 
 		rows, err := tx.QueryContext(ctx,
 			fmt.Sprintf(
 				`INSERT INTO people (name) VALUES %s ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
-				strings.Repeat(",(?)", len(directorNames))[1:],
+				strings.Repeat(",(?)", len(peopleArgs))[1:],
 			),
-			directorNames...)
+			peopleArgs...)
 		if err != nil {
 			return err
 		}
@@ -125,89 +132,60 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 			err = errors.Join(err, rows.Err(), rows.Close())
 		}()
 
-		directorIDs := make([]int64, len(directorNames))
+		people := make([]int64, len(peopleArgs))
 		index := 0
 
 		for rows.Next() {
-			if err = rows.Scan(&directorIDs[index]); err != nil {
+			if err = rows.Scan(&people[index]); err != nil {
 				return err
 			}
 
 			index++
 		}
 
-		movieDirectorArgs := make([]any, len(directorIDs)*2)
+		if directorsLen > 0 {
+			movieDirectorArgs := make([]any, directorsLen*2)
 
-		for i, id := range directorIDs {
-			movieDirectorArgs[i*2] = movie.ID
-			movieDirectorArgs[i*2+1] = id
-		}
-
-		_, err = tx.ExecContext(ctx,
-			fmt.Sprintf(
-				`INSERT INTO movie_directors (movie_id, person_id) VALUES %s;`,
-				strings.Repeat(",(?, ?)", len(directorIDs))[1:],
-			),
-			movieDirectorArgs...,
-		)
-		if err != nil {
-			return err
-		}
-	}
-
-	if len(movie.Actors) > 0 {
-		actorNames := make([]any, len(movie.Actors))
-
-		for i, p := range movie.Actors {
-			actorNames[i] = p
-		}
-
-		rows, err := tx.QueryContext(ctx,
-			fmt.Sprintf(
-				`INSERT INTO people (name) VALUES %s ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
-				strings.Repeat(",(?)", len(actorNames))[1:],
-			),
-			actorNames...)
-		if err != nil {
-			return err
-		}
-
-		defer func() {
-			err = errors.Join(err, rows.Err(), rows.Close())
-		}()
-
-		actorIDs := make([]int64, len(actorNames))
-		index := 0
-
-		for rows.Next() {
-			if err = rows.Scan(&actorIDs[index]); err != nil {
-				return err
+			for i, id := range people[:directorsLen] {
+				movieDirectorArgs[i*2] = movie.ID
+				movieDirectorArgs[i*2+1] = id
 			}
 
-			index++
+			_, err = tx.ExecContext(ctx,
+				fmt.Sprintf(
+					`INSERT INTO movie_directors (movie_id, person_id) VALUES %s;`,
+					strings.Repeat(",(?, ?)", directorsLen)[1:],
+				),
+				movieDirectorArgs...,
+			)
+			if err != nil {
+				return err
+			}
 		}
 
-		movieActorArgs := make([]any, len(actorIDs)*2)
+		if actorsLen > 0 {
+			movieActorArgs := make([]any, actorsLen*2)
 
-		for i, id := range actorIDs {
-			movieActorArgs[i*2] = movie.ID
-			movieActorArgs[i*2+1] = id
-		}
+			for i, id := range people[directorsLen:] {
+				movieActorArgs[i*2] = movie.ID
+				movieActorArgs[i*2+1] = id
+			}
 
-		_, err = tx.ExecContext(ctx,
-			fmt.Sprintf(
-				`INSERT INTO movie_actors (movie_id, person_id) VALUES %s;`,
-				strings.Repeat(",(?, ?)", len(actorIDs))[1:],
-			),
-			movieActorArgs...,
-		)
-		if err != nil {
-			return err
+			_, err = tx.ExecContext(ctx,
+				fmt.Sprintf(
+					`INSERT INTO movie_actors (movie_id, person_id) VALUES %s;`,
+					strings.Repeat(",(?, ?)", actorsLen)[1:],
+				),
+				movieActorArgs...,
+			)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
-	if len(movie.Countries) > 0 {
-		countryArgs := make([]any, len(movie.Countries))
+	if countriesLen > 0 {
+		countryArgs := make([]any, countriesLen)
 
 		for i, c := range movie.Countries {
 			countryArgs[i] = c
@@ -239,9 +217,9 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 			index++
 		}
 
-		movieCountryArgs := make([]any, len(movie.Countries)*2)
+		movieCountryArgs := make([]any, countriesLen*2)
 
-		for i := range len(movie.Countries) {
+		for i := range countriesLen {
 			movieCountryArgs[i*2] = movie.ID
 			movieCountryArgs[i*2+1] = countryIDs[i]
 		}
@@ -249,7 +227,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		_, err = tx.ExecContext(ctx,
 			fmt.Sprintf(
 				`INSERT INTO movie_countries (movie_id, country_id) VALUES %s;`,
-				strings.Repeat(",(?, ?)", len(movie.Countries))[1:],
+				strings.Repeat(",(?, ?)", countriesLen)[1:],
 			),
 			movieCountryArgs...,
 		)
@@ -258,8 +236,8 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		}
 	}
 
-	if len(movie.Genres) > 0 {
-		genreArgs := make([]any, len(movie.Genres))
+	if genresLen > 0 {
+		genreArgs := make([]any, genresLen)
 
 		for i, c := range movie.Genres {
 			genreArgs[i] = c
@@ -291,9 +269,9 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 			index++
 		}
 
-		movieGenreArgs := make([]any, len(movie.Genres)*2)
+		movieGenreArgs := make([]any, genresLen*2)
 
-		for i := range len(movie.Genres) {
+		for i := range genresLen {
 			movieGenreArgs[i*2] = movie.ID
 			movieGenreArgs[i*2+1] = genreIDs[i]
 		}
@@ -301,7 +279,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		_, err = tx.ExecContext(ctx,
 			fmt.Sprintf(
 				`INSERT INTO movie_genres (movie_id, genre_id) VALUES %s;`,
-				strings.Repeat(",(?, ?)", len(movie.Genres))[1:],
+				strings.Repeat(",(?, ?)", genresLen)[1:],
 			),
 			movieGenreArgs...,
 		)

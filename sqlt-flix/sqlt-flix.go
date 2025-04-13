@@ -3,14 +3,38 @@ package sqltflix
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	_ "github.com/mattn/go-sqlite3"
 	benchflix "github.com/wroge/bench-flix"
 	"github.com/wroge/sqlt"
 )
 
+type MovieDirectors struct {
+	MovieID   int64
+	PersonIDs []int64
+}
+
+type MovieActors struct {
+	MovieID   int64
+	PersonIDs []int64
+}
+
+type MovieCountries struct {
+	MovieID    int64
+	CountryIDs []int64
+}
+
+type MovieGenres struct {
+	MovieID  int64
+	GenreIDs []int64
+}
+
 var (
-	schema = sqlt.Exec[any](sqlt.Parse(`
+	config = sqlt.Config{
+		Cache: &sqlt.Cache{},
+	}
+	schema = sqlt.Exec[any](config, sqlt.Parse(`
 		CREATE TABLE movies (
 			id INTEGER PRIMARY KEY,
 			title TEXT NOT NULL,
@@ -58,92 +82,67 @@ var (
 		);
 	`))
 
-	create = sqlt.Transaction(nil,
-		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
+	insertMovie = sqlt.Exec[benchflix.Movie](config, sqlt.Parse(`
 			INSERT INTO movies (id, title, added_at, rating) VALUES 
 			({{ .ID }}, {{ .Title }}, {{ .AddedAt }}, {{ .Rating }});
-		`)),
-		sqlt.All[benchflix.Movie, int64](sqlt.Name("DirectorIDs"), sqlt.Parse(`
-			{{ if .Directors }}
-				INSERT INTO people (name) VALUES 
-				{{ range $i, $p := .Directors }}
-					{{ if $i }}, {{ end }}
-					({{ $p }})
-				{{ end }}
-				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
-			{{ end }}
-		`)),
-		sqlt.All[benchflix.Movie, int64](sqlt.Name("ActorIDs"), sqlt.Parse(`
-			{{ if .Actors }}
-				INSERT INTO people (name) VALUES 
-				{{ range $i, $p := .Actors }}
-					{{ if $i }}, {{ end }}
-					({{ $p }})
-				{{ end }}
-				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
-			{{ end }}
-		`)),
-		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
-			{{ if .Directors }}
-				INSERT INTO movie_directors (movie_id, person_id) VALUES
-				{{ range $i, $id := (Context "DirectorIDs") }}
-					{{ if $i }}, {{ end }}
-					({{ $.ID }}, {{ $id }})
-				{{ end }}
-			{{ end }}
-		`)),
-		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
-			{{ if .Actors }}
-				INSERT INTO movie_actors (movie_id, person_id) VALUES
-				{{ range $i, $id := (Context "ActorIDs") }}
-					{{ if $i }}, {{ end }}
-					({{ $.ID }}, {{ $id }})
-				{{ end }}
-			{{ end }}
-		`)),
-		sqlt.All[benchflix.Movie, int64](sqlt.Name("CountryIDs"), sqlt.Parse(`
-			{{ if .Countries }}
-				INSERT INTO countries (name) VALUES 
-				{{ range $i, $p := .Countries }}
-					{{ if $i }}, {{ end }}
-					({{ $p }})
-				{{ end }}
-				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
-			{{ end }}
-		`)),
-		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
-			{{ if .Countries }}
-				INSERT INTO movie_countries (movie_id, country_id) VALUES
-				{{ range $i, $id := (Context "CountryIDs") }}
-					{{ if $i }}, {{ end }}
-					({{ $.ID }}, {{ $id }})
-				{{ end }}
-			{{ end }}
-		`)),
-		sqlt.All[benchflix.Movie, int64](sqlt.Name("GenreIDs"), sqlt.Parse(`
-			{{ if .Genres }}
-				INSERT INTO genres (name) VALUES 
-				{{ range $i, $p := .Genres }}
-					{{ if $i }}, {{ end }}
-					({{ $p }})
-				{{ end }}
-				ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
-			{{ end }}
-		`)),
-		sqlt.Exec[benchflix.Movie](sqlt.Parse(`
-			{{ if .Genres }}
-				INSERT INTO movie_genres (movie_id, genre_id) VALUES
-				{{ range $i, $id := (Context "GenreIDs") }}
-					{{ if $i }}, {{ end }}
-					({{ $.ID }}, {{ $id }})
-				{{ end }}
-			{{ end }}
-		`)),
-	)
+		`))
+	insertPeople = sqlt.All[[]string, int64](config, sqlt.Parse(`
+		INSERT INTO people (name) VALUES 
+		{{ range $i, $p := . }}
+			{{ if $i }}, {{ end }}
+			({{ $p }})
+		{{ end }}
+		ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+	`))
 
-	first = sqlt.First[int64, benchflix.Movie](sqlt.Cache{}, sqlt.Parse(`
+	insertMovieDirectors = sqlt.Exec[MovieDirectors](config, sqlt.Parse(`
+		INSERT INTO movie_directors (movie_id, person_id) VALUES
+		{{ range $i, $id := .PersonIDs }}
+			{{ if $i }}, {{ end }}
+			({{ $.MovieID }}, {{ $id }})
+		{{ end }}
+	`))
+	insertMovieActors = sqlt.Exec[MovieActors](config, sqlt.Parse(`
+		INSERT INTO movie_actors (movie_id, person_id) VALUES
+		{{ range $i, $id := .PersonIDs }}
+			{{ if $i }}, {{ end }}
+			({{ $.MovieID }}, {{ $id }})
+		{{ end }}
+	`))
+	insertCountries = sqlt.All[[]string, int64](config, sqlt.Parse(`
+		INSERT INTO countries (name) VALUES 
+		{{ range $i, $p := . }}
+			{{ if $i }}, {{ end }}
+			({{ $p }})
+		{{ end }}
+		ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+	`))
+	insertMovieCountries = sqlt.Exec[MovieCountries](config, sqlt.Parse(`
+		INSERT INTO movie_countries (movie_id, country_id) VALUES
+		{{ range $i, $id := .CountryIDs }}
+			{{ if $i }}, {{ end }}
+			({{ $.MovieID }}, {{ $id }})
+		{{ end }}
+	`))
+	insertGenres = sqlt.All[[]string, int64](config, sqlt.Parse(`
+		INSERT INTO genres (name) VALUES 
+		{{ range $i, $p := . }}
+			{{ if $i }}, {{ end }}
+			({{ $p }})
+		{{ end }}
+		ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id;
+	`))
+	insertMovieGenres = sqlt.Exec[MovieGenres](config, sqlt.Parse(`
+		INSERT INTO movie_genres (movie_id, genre_id) VALUES
+		{{ range $i, $id := .GenreIDs }}
+			{{ if $i }}, {{ end }}
+			({{ $.MovieID }}, {{ $id }})
+		{{ end }}
+	`))
+
+	first = sqlt.First[int64, benchflix.Movie](config, sqlt.Parse(`
 		SELECT
-			movies.id,		{{ ScanInt "ID" }}
+			movies.id,			{{ ScanInt "ID" }}
 			movies.title,		{{ ScanString "Title" }}
 			movies.added_at,	{{ ScanTime "AddedAt" }}
 			movies.rating,		{{ ScanFloat "Rating" }}
@@ -176,9 +175,9 @@ var (
 		ORDER BY movies.title ASC;
 	`))
 
-	all = sqlt.All[benchflix.Query, benchflix.Movie](sqlt.Cache{}, sqlt.Parse(`
+	all = sqlt.All[benchflix.Query, benchflix.Movie](config, sqlt.Parse(`
 		SELECT
-			movies.id,		{{ ScanInt "ID" }}
+			movies.id,			{{ ScanInt "ID" }}
 			movies.title,		{{ ScanString "Title" }}
 			movies.added_at,	{{ ScanTime "AddedAt" }}
 			movies.rating,		{{ ScanFloat "Rating" }}
@@ -258,7 +257,7 @@ var (
 		{{ end }};
 	`))
 
-	deleteMovie = sqlt.Exec[int64](sqlt.Cache{}, sqlt.Parse(`
+	deleteMovie = sqlt.Exec[int64](config, sqlt.Parse(`
 		DELETE FROM movies WHERE id = {{ . }};
 	`))
 )
@@ -288,10 +287,88 @@ func (r Repository) Delete(ctx context.Context, id int64) error {
 	return err
 }
 
-func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {
-	_, err := create.Exec(ctx, r.DB, movie)
+func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err error) {
+	var (
+		actorsLen    = len(movie.Actors)
+		directorsLen = len(movie.Directors)
+	)
 
-	return err
+	tx, err := r.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			err = errors.Join(err, tx.Rollback())
+		} else {
+			err = tx.Commit()
+		}
+	}()
+
+	_, err = insertMovie.Exec(ctx, tx, movie)
+	if err != nil {
+		return err
+	}
+
+	if actorsLen+directorsLen > 0 {
+		people, err := insertPeople.Exec(ctx, tx, append(movie.Directors, movie.Actors...))
+		if err != nil {
+			return err
+		}
+
+		if directorsLen > 0 {
+			_, err = insertMovieDirectors.Exec(ctx, tx, MovieDirectors{
+				MovieID:   movie.ID,
+				PersonIDs: people[:directorsLen],
+			})
+			if err != nil {
+				return err
+			}
+		}
+
+		if actorsLen > 0 {
+			_, err = insertMovieActors.Exec(ctx, tx, MovieActors{
+				MovieID:   movie.ID,
+				PersonIDs: people[directorsLen:],
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(movie.Countries) > 0 {
+		countries, err := insertCountries.Exec(ctx, tx, movie.Countries)
+		if err != nil {
+			return err
+		}
+
+		_, err = insertMovieCountries.Exec(ctx, tx, MovieCountries{
+			MovieID:    movie.ID,
+			CountryIDs: countries,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(movie.Genres) > 0 {
+		genres, err := insertGenres.Exec(ctx, tx, movie.Genres)
+		if err != nil {
+			return err
+		}
+
+		_, err = insertMovieGenres.Exec(ctx, tx, MovieGenres{
+			MovieID:  movie.ID,
+			GenreIDs: genres,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchflix.Movie, error) {
