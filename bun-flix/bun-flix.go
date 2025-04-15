@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"math"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -185,7 +186,8 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) error {
 	for i, d := range movie.Directors {
 		if err = tx.NewInsert().Model(&Person{
 			Name: d,
-		}).On("CONFLICT (name) DO UPDATE").Set("name = EXCLUDED.name").Returning("id").Scan(ctx, &directorIDs[i]); err != nil {
+		}).On("CONFLICT (name) DO UPDATE").
+			Set("name = EXCLUDED.name").Returning("id").Scan(ctx, &directorIDs[i]); err != nil {
 			return err
 		}
 	}
@@ -301,7 +303,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		}).
 		Order("title ASC")
 
-	if query.Limit > 0 {
+	if query.Limit > 0 && query.Limit < math.MaxInt {
 		q = q.Limit(int(query.Limit))
 	}
 

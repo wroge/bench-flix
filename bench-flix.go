@@ -65,7 +65,7 @@ func NewMovie(record []string) (Movie, error) {
 func Unique(list []string) []string {
 	var (
 		seen   = map[string]bool{}
-		result []string
+		result = make([]string, 0, len(list))
 	)
 
 	for _, s := range list {
@@ -74,6 +74,7 @@ func Unique(list []string) []string {
 		}
 
 		seen[s] = true
+
 		result = append(result, s)
 	}
 

@@ -2,6 +2,7 @@ package gormflix
 
 import (
 	"context"
+	"math"
 	"time"
 
 	benchflix "github.com/wroge/bench-flix"
@@ -199,7 +200,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		Distinct("movies.*").
 		Order("movies.title ASC")
 
-	if query.Limit > 0 {
+	if query.Limit > 0 && query.Limit < math.MaxInt {
 		db = db.Limit(int(query.Limit))
 	}
 

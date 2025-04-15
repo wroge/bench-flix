@@ -1,7 +1,6 @@
 package benchflix_test
 
 import (
-	"context"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -67,6 +66,12 @@ var inits = []Init{
 			return sqlxflix.NewRepository("sqlite3", ":memory:?_fk=1")
 		},
 	},
+	// {
+	// 	"bob",
+	// 	func() benchflix.Repository {
+	// 		return bobflix.NewRepository("sqlite3", ":memory:?_fk=1")
+	// 	},
+	// },
 }
 
 type Case struct {
@@ -142,8 +147,6 @@ var (
 )
 
 func BenchmarkSchemaAndCreate(b *testing.B) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		b.Fatal(err)
@@ -166,7 +169,7 @@ func BenchmarkSchemaAndCreate(b *testing.B) {
 							b.Fatal(reflect.TypeOf(r), err)
 						}
 
-						if err = r.Create(ctx, movie); err != nil {
+						if err = r.Create(b.Context(), movie); err != nil {
 							b.Fatal(reflect.TypeOf(r), err)
 						}
 					}
@@ -177,8 +180,6 @@ func BenchmarkSchemaAndCreate(b *testing.B) {
 }
 
 func BenchmarkCreateAndDelete(b *testing.B) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		b.Fatal(err)
@@ -198,7 +199,7 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 				b.Fatal(reflect.TypeOf(r), err)
 			}
 
-			if err = r.Create(ctx, movie); err != nil {
+			if err = r.Create(b.Context(), movie); err != nil {
 				b.Fatal(reflect.TypeOf(r), err)
 			}
 
@@ -206,7 +207,7 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 		}
 
 		for _, id := range ids {
-			if err = r.Delete(ctx, id); err != nil {
+			if err = r.Delete(b.Context(), id); err != nil {
 				b.Fatal(reflect.TypeOf(r), err)
 			}
 		}
@@ -229,8 +230,6 @@ func BenchmarkCreateAndDelete(b *testing.B) {
 }
 
 func Test_Query(t *testing.T) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		panic(err)
@@ -252,12 +251,12 @@ func Test_Query(t *testing.T) {
 						t.Fatal(reflect.TypeOf(r), err)
 					}
 
-					if err = r.Create(ctx, movie); err != nil {
+					if err = r.Create(t.Context(), movie); err != nil {
 						t.Fatal(reflect.TypeOf(r), err)
 					}
 				}
 
-				movies, err := r.Query(ctx, c.Query)
+				movies, err := r.Query(t.Context(), c.Query)
 				if err != nil {
 					t.Fatal(reflect.TypeOf(r), err)
 				}
@@ -276,8 +275,6 @@ func Test_Query(t *testing.T) {
 }
 
 func BenchmarkQuery(b *testing.B) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		b.Fatal(err)
@@ -289,7 +286,7 @@ func BenchmarkQuery(b *testing.B) {
 	}
 
 	do := func(r benchflix.Repository, c Case) {
-		movies, err := r.Query(ctx, c.Query)
+		movies, err := r.Query(b.Context(), c.Query)
 		if err != nil {
 			b.Fatal(reflect.TypeOf(r), err)
 		}
@@ -314,7 +311,7 @@ func BenchmarkQuery(b *testing.B) {
 					b.Fatal(reflect.TypeOf(r), err)
 				}
 
-				if err = r.Create(ctx, movie); err != nil {
+				if err = r.Create(b.Context(), movie); err != nil {
 					b.Fatal(reflect.TypeOf(r), err)
 				}
 			}
@@ -332,8 +329,6 @@ func BenchmarkQuery(b *testing.B) {
 }
 
 func Test_Read(t *testing.T) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		t.Fatal(err)
@@ -355,12 +350,12 @@ func Test_Read(t *testing.T) {
 						t.Fatal(reflect.TypeOf(r), err)
 					}
 
-					if err = r.Create(ctx, movie); err != nil {
+					if err = r.Create(t.Context(), movie); err != nil {
 						t.Fatal(reflect.TypeOf(r), err)
 					}
 				}
 
-				movie, err := r.Read(ctx, c.ID)
+				movie, err := r.Read(t.Context(), c.ID)
 				if err != nil {
 					t.Fatal(reflect.TypeOf(r), err)
 				}
@@ -374,8 +369,6 @@ func Test_Read(t *testing.T) {
 }
 
 func BenchmarkRead(b *testing.B) {
-	ctx := context.Background()
-
 	file, err := os.Open("./movies.csv")
 	if err != nil {
 		b.Fatal(err)
@@ -387,7 +380,7 @@ func BenchmarkRead(b *testing.B) {
 	}
 
 	do := func(r benchflix.Repository, c IDCase) {
-		movie, err := r.Read(ctx, c.ID)
+		movie, err := r.Read(b.Context(), c.ID)
 		if err != nil {
 			b.Fatal(reflect.TypeOf(r), err)
 		}
@@ -407,7 +400,7 @@ func BenchmarkRead(b *testing.B) {
 					b.Fatal(err)
 				}
 
-				if err = r.Create(ctx, movie); err != nil {
+				if err = r.Create(b.Context(), movie); err != nil {
 					b.Fatal(err)
 				}
 			}

@@ -334,21 +334,25 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 
 	if !query.AddedBefore.IsZero() {
 		builder.WriteString(` AND added_at < ?`)
+
 		args = append(args, query.AddedBefore)
 	}
 
 	if !query.AddedAfter.IsZero() {
 		builder.WriteString(` AND added_at > ?`)
+
 		args = append(args, query.AddedAfter)
 	}
 
 	if query.MinRating > 0 {
 		builder.WriteString(` AND rating >= ?`)
+
 		args = append(args, query.MinRating)
 	}
 
 	if query.MaxRating > 0 {
 		builder.WriteString(` AND rating <= ?`)
+
 		args = append(args, query.MaxRating)
 	}
 
@@ -356,6 +360,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 
 	if query.Limit > 0 {
 		builder.WriteString(" LIMIT ?")
+		
 		args = append(args, query.Limit)
 	}
 

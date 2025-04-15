@@ -44,6 +44,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 	if err != nil {
 		return err
 	}
+
 	defer func() {
 		if err != nil {
 			err = errors.Join(err, tx.Rollback())
@@ -68,6 +69,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		if err != nil {
 			return err
 		}
+
 		if err := txdb.AddMovieDirector(ctx, db.AddMovieDirectorParams{
 			MovieID:  movie.ID,
 			PersonID: id,
@@ -81,6 +83,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		if err != nil {
 			return err
 		}
+
 		if err := txdb.AddMovieActor(ctx, db.AddMovieActorParams{
 			MovieID:  movie.ID,
 			PersonID: id,
@@ -94,6 +97,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		if err != nil {
 			return err
 		}
+
 		if err := txdb.AddMovieCountry(ctx, db.AddMovieCountryParams{
 			MovieID:   movie.ID,
 			CountryID: id,
@@ -107,6 +111,7 @@ func (r Repository) Create(ctx context.Context, movie benchflix.Movie) (err erro
 		if err != nil {
 			return err
 		}
+
 		if err := txdb.AddMovieGenre(ctx, db.AddMovieGenreParams{
 			MovieID: movie.ID,
 			GenreID: id,
@@ -153,25 +158,21 @@ func (r Repository) Query(ctx context.Context, q benchflix.Query) ([]benchflix.M
 		return nil, fmt.Errorf("HERE: %w", err)
 	}
 
-	var movies []benchflix.Movie
-	for _, row := range rows {
-		movies = append(movies, ConvertMovie(row))
+	movies := make([]benchflix.Movie, len(rows))
+	for i, row := range rows {
+		movies[i] = benchflix.Movie{
+			ID:        row.ID,
+			Title:     row.Title,
+			AddedAt:   row.AddedAt,
+			Rating:    row.Rating,
+			Directors: splitCSV(row.Directors),
+			Actors:    splitCSV(row.Actors),
+			Countries: splitCSV(row.Countries),
+			Genres:    splitCSV(row.Genres),
+		}
 	}
 
 	return movies, nil
-}
-
-func ConvertMovie(m db.QueryMoviesRow) benchflix.Movie {
-	return benchflix.Movie{
-		ID:        m.ID,
-		Title:     m.Title,
-		AddedAt:   m.AddedAt,
-		Rating:    m.Rating,
-		Directors: splitCSV(m.Directors),
-		Actors:    splitCSV(m.Actors),
-		Countries: splitCSV(m.Countries),
-		Genres:    splitCSV(m.Genres),
-	}
 }
 
 func splitCSV(s string) []string {

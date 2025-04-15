@@ -1,0 +1,25 @@
+version: "2"
+
+linters:
+  default: all
+  disable:
+    - wrapcheck
+    - varnamelen
+    - revive
+    - paralleltest
+    - nestif
+    - musttag
+    - mnd
+    - ireturn
+    - gocognit
+    - gocyclo
+    - gochecknoglobals
+    - funlen
+    - forbidigo
+    - exhaustruct
+    - dupl
+    - depguard
+    - cyclop
+    - maintidx
+    - lll
+    - err113

@@ -7,12 +7,12 @@ import (
 	"os"
 
 	benchflix "github.com/wroge/bench-flix"
-	entflix "github.com/wroge/bench-flix/ent-flix"
+	bobflix "github.com/wroge/bench-flix/bob-flix"
 )
 
 func main() {
 	ctx := context.Background()
-	r := entflix.NewRepository("sqlite3", ":memory:?_fk=1")
+	r := bobflix.NewRepository("sqlite3", ":memory:?_fk=1")
 
 	file, err := os.Open("./movies.csv")
 	if err != nil {

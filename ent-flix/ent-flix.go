@@ -3,6 +3,7 @@ package entflix
 import (
 	"context"
 	"errors"
+	"math"
 
 	"entgo.io/ent/dialect/sql"
 	_ "github.com/mattn/go-sqlite3"
@@ -135,7 +136,7 @@ func (r Repository) Query(ctx context.Context, query benchflix.Query) ([]benchfl
 		).
 		Order(movie.ByTitle(sql.OrderAsc()))
 
-	if query.Limit > 0 {
+	if query.Limit > 0 && query.Limit < math.MaxInt {
 		q = q.Limit(int(query.Limit))
 	}
 
